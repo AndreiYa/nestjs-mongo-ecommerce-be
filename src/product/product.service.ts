@@ -1,13 +1,18 @@
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { Product, ProductDocument } from './schema/product.schema';
+import {Injectable} from '@nestjs/common';
+import {Model} from 'mongoose';
+import {InjectModel} from '@nestjs/mongoose';
+import {Product, ProductDocument} from './schema/product.schema';
 import {CreateProductDTO} from "./dto/create-product.dto";
 import {FilterProductDTO} from "./dto/filter-product.dto";
+import {Brand, BrandDocument} from "./schema/brand.schema";
+import {BrandDto} from "./dto/brand.dto";
 
 @Injectable()
 export class ProductService {
-  constructor(@InjectModel('Product') private readonly productModel: Model<ProductDocument>) { }
+  constructor(
+    @InjectModel('Product') private readonly productModel: Model<ProductDocument>,
+    @InjectModel('Brand') private readonly brandModel: Model<BrandDocument>
+    ) { }
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO): Promise<Product[]> {
     const { category, search } = filterProductDTO;
@@ -51,5 +56,24 @@ export class ProductService {
   async deleteProduct(id: string): Promise<any> {
     const deletedProduct = await this.productModel.findByIdAndRemove(id);
     return deletedProduct;
+  }
+
+  // BRANDS
+
+  async getBrands(): Promise<Brand[]> {
+    return this.brandModel.find().exec()
+  }
+
+  async addBrand(brandDto: BrandDto): Promise<Brand> {
+    const newBrand = await this.brandModel.create(brandDto)
+    return newBrand.save()
+  }
+
+  async updateBrand(id: string, brandDto: BrandDto): Promise<Brand> {
+    return this.brandModel.findByIdAndUpdate(id, brandDto, {new: true});
+  }
+
+  async deleteBrand(id: string) {
+    return this.brandModel.findByIdAndRemove(id)
   }
 }

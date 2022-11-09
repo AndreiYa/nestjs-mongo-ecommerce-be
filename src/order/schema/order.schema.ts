@@ -1,35 +1,30 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import {ClientInfo} from "./clientInfo.schema";
+import {Customer} from "./customer.schema";
 import {OrderState} from "./orderState.schema";
-import {DeliveryMethod} from "./deliveryMethod.schema";
 import {PaymentMethod} from "./paymentMethod.schema";
 import {CartItem} from "../../cart/schema/cartItem.schema";
+import {Delivery} from "./delivery.schema";
+import {OrderHistoryItem} from "./orderHistoryItem.schema";
 
 export type OrderDocument = Order & Document;
 
 @Schema()
 export class Order {
   @Prop()
-  trackCode?: string;
+  orderCode: string;
 
   @Prop()
-  clientCode: string;
-
-  @Prop()
-  clientInfo: ClientInfo;
+  customer: Customer;
 
   @Prop({ type: () => Date })
   startDate: Date;
-
-  @Prop({ type: () => Date})
-  finishDate?: Date;
 
   @Prop()
   state: OrderState;
 
   @Prop()
-  deliveryMethod: DeliveryMethod;
+  delivery: Delivery;
 
   @Prop()
   paymentMethod: PaymentMethod;
@@ -42,6 +37,9 @@ export class Order {
 
   @Prop()
   totalDiscount: number;
+
+  @Prop({type: () => [OrderHistoryItem]})
+  historyList: OrderHistoryItem[]
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

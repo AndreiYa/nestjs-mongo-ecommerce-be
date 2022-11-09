@@ -62,14 +62,14 @@ export class CartService {
     // }
   // }
 
-  async removeItemFromCart(userId: string, productId: string): Promise<any> {
-    const cart = await this.getCart(userId);
-
-    const itemIndex = cart.items.findIndex((item) => item.productId == productId);
-
-    if (itemIndex > -1) {
-      cart.items.splice(itemIndex, 1);
-      return cart.save();
-    }
-  }
+  // async removeItemFromCart(userId: string, productId: string): Promise<any> {
+  //   const cart = await this.getCart(userId);
+  //
+  //   const itemIndex = cart.items.findIndex((item) => item.productId == productId);
+  //
+  //   if (itemIndex > -1) {
+  //     cart.items.splice(itemIndex, 1);
+  //     return cart.save();
+  //   }
+  // }
 }

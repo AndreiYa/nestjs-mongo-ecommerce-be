@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import {ProductTypePropertyType} from "../enums/productTypePropertyType.enum.";
+import {ProductTypePropertyOption} from "./productTypePropertyOption.schema";
 
 export type ProductTypePropertyDocument = ProductTypeProperty & Document;
 
@@ -15,8 +16,8 @@ export class ProductTypeProperty {
   @Prop({type: [String], enum: ProductTypePropertyType })
   type: ProductTypePropertyType
 
-  @Prop({type: () => [ProductTypeProperty]})
-  properties: ProductTypeProperty[];
+  @Prop({type: () => [ProductTypePropertyOption]})
+  options?: ProductTypePropertyOption[];
 }
 
 export const ProductTypePropertySchema = SchemaFactory.createForClass(ProductTypeProperty);

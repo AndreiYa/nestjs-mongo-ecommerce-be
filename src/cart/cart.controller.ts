@@ -19,15 +19,15 @@ export class CartController {
   //   return cart;
   // }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.User)
-  @Delete('/')
-  async removeItemFromCart(@Request() req, @Body() { productId }) {
-    const userId = req.user.userId;
-    const cart = await this.cartService.removeItemFromCart(userId, productId);
-    if (!cart) throw new NotFoundException('Item does not exist');
-    return cart;
-  }
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles(Role.User)
+  // @Delete('/')
+  // async removeItemFromCart(@Request() req, @Body() { productId }) {
+  //   const userId = req.user.userId;
+  //   const cart = await this.cartService.removeItemFromCart(userId, productId);
+  //   if (!cart) throw new NotFoundException('Item does not exist');
+  //   return cart;
+  // }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.User)
