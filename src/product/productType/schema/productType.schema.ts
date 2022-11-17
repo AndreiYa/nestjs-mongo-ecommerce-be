@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import {ProductTypeProperty} from "./ProductTypeProperty.schema";
+import {ProductTypeProperty} from "../../productTypeProperty/schema/ProductTypeProperty.schema";
 
 export type ProductTypeDocument = ProductType & Document;
 

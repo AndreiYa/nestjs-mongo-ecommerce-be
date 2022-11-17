@@ -2,16 +2,13 @@ import {Injectable} from '@nestjs/common';
 import {Model} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import {Product, ProductDocument} from './schema/product.schema';
-import {Brand, BrandDocument} from "./schema/brand.schema";
-import {BrandDTO} from "./dto/brand.dto";
 import {FilterProductDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
 
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel('Product') private readonly productModel: Model<ProductDocument>,
-    @InjectModel('Brand') private readonly brandModel: Model<BrandDocument>
+    @InjectModel('Product') private readonly productModel: Model<ProductDocument>
     ) { }
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO): Promise<Product[]> {
@@ -51,24 +48,5 @@ export class ProductService {
 
   async deleteProduct(id: string): Promise<any> {
     return this.productModel.findByIdAndRemove(id);
-  }
-
-  // BRANDS
-
-  async getBrands() {
-    return this.brandModel.find();
-  }
-
-  async addBrand(brandDto: BrandDTO): Promise<Brand> {
-    const newBrand = await this.brandModel.create(brandDto)
-    return newBrand.save()
-  }
-
-  async updateBrand(id: string, brandDto: BrandDTO): Promise<Brand> {
-    return this.brandModel.findByIdAndUpdate(id, brandDto, {new: true});
-  }
-
-  async deleteBrand(id: string) {
-    return this.brandModel.findByIdAndRemove(id)
   }
 }

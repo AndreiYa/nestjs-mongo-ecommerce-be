@@ -1,6 +1,6 @@
 import {IsNotEmpty, IsOptional, IsString} from "class-validator";
 import {Type} from "class-transformer";
-import {ProductTypePropertyDTO} from "./productTypeProperty.dto";
+import {ProductTypePropertyDTO} from "../../productTypeProperty/dto/productTypeProperty.dto";
 
 export class ProductTypeDTO {
   @IsString()

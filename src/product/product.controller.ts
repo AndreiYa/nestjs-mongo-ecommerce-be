@@ -15,9 +15,6 @@ import {JwtAuthGuard} from "../auth/guards/jwt.guard";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {Role} from "../auth/enums/role.enum";
 import {Roles} from "../auth/decorators/roles.decorator";
-import {Brand} from "./schema/brand.schema";
-import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
-import {BrandDTO} from "./dto/brand.dto";
 import {FilterProductDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
 
@@ -61,37 +58,5 @@ export class ProductController {
     const product = await this.productService.deleteProduct(id);
     if (!product) throw new NotFoundException('Product does not exist');
     return product;
-  }
-
-  // BRAND
-
-  @Get('brand/')
-  async getBrands(): Promise<Brand[]> {
-    return this.productService.getBrands();
-  }
-
-  @Post('brand/')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async addBrand(@Body() brandDTO: BrandDTO): Promise<Brand> {
-    return await this.productService.addBrand(brandDTO)
-  }
-
-  @Put('brand/:id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async updateBrand(@Param('id', IdValidationPipe) id: string, @Body() brandDTO: BrandDTO): Promise<Brand> {
-    const brand = await this.productService.updateBrand(id, brandDTO);
-    if (!brand) throw new NotFoundException('Brand does not exist!');
-    return brand;
-  }
-
-  @Delete('brand/:id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
-  async deleteBrand(@Param('id', IdValidationPipe) id: string) {
-    const brand = await this.productService.deleteBrand(id);
-    if (!brand) throw new NotFoundException('Brand does not exist');
-    return brand;
   }
 }

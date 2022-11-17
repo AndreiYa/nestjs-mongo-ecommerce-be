@@ -1,7 +1,7 @@
 import {IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {ProductPropsDTO} from "./productProps.dto";
-import {BrandDTO} from "./brand.dto";
+import {BrandDTO} from "../brand/dto/brand.dto";
 
 export class CreateProductDTO {
   @IsString()
