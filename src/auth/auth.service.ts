@@ -26,4 +26,12 @@ export class AuthService {
       accessToken: this.jwtService.sign(payload),
     };
   }
+
+  async getCurrentUser({ username, id, roles }) {
+    const payload = { username, id, roles };
+    return {
+      ...payload,
+      accessToken: this.jwtService.sign(payload),
+    };
+  }
 }

@@ -1,9 +1,9 @@
-import {Controller, Request, Get, Post, Body, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
-import { AuthService } from './auth.service';
-import { Roles } from './decorators/roles.decorator';
-import { Role } from './enums/role.enum';
-import { RolesGuard } from './guards/roles.guard';
+import {Body, Controller, Get, Post, Request, UseGuards, UsePipes, ValidationPipe} from '@nestjs/common';
+import {UserService} from 'src/user/user.service';
+import {AuthService} from './auth.service';
+import {Roles} from './decorators/roles.decorator';
+import {Role} from './enums/role.enum';
+import {RolesGuard} from './guards/roles.guard';
 import {CreateUserDTO} from "../user/dto/create-user-dto";
 import {LocalAuthGuard} from "./guards/local.guard";
 import {JwtAuthGuard} from "./guards/jwt.guard";
@@ -41,9 +41,10 @@ export class AuthController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin, Role.User)
   async getCurrentUser(
     @CurrentUser() currentUser) {
-    return this.userService.getCurrentUser(currentUser)
+    return this.authService.getCurrentUser(currentUser)
   }
 }

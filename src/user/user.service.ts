@@ -26,10 +26,6 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async getCurrentUser(currentUser: User) {
-    return currentUser;
-  }
-
   async getUserByName(username: string): Promise<User | undefined> {
     return this.userModel.findOne({username});
   }

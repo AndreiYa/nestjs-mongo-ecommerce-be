@@ -8,7 +8,6 @@ import {
   Post,
   Put,
   Query,
-  Req,
   UseGuards
 } from '@nestjs/common';
 import {ProductService} from "./product.service";
@@ -18,7 +17,6 @@ import {Role} from "../auth/enums/role.enum";
 import {Roles} from "../auth/decorators/roles.decorator";
 import {Brand} from "./schema/brand.schema";
 import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
-import {Request} from 'express';
 import {BrandDTO} from "./dto/brand.dto";
 import {FilterProductDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
@@ -68,33 +66,8 @@ export class ProductController {
   // BRAND
 
   @Get('brand/')
-  async getBrands(@Req() req: Request, @Query() query: any): Promise<Brand[]> {
-    console.log(req.query)
-    console.log(req.query.sort)
-    console.log(query)
-
-    let options = {}
-
-    if (req.query.search) {
-      options = {
-        $or: [
-          {name: new RegExp(req.query.search.toString(), 'i')},
-          {description: new RegExp(req.query.search.toString(), 'i')}
-        ]
-      }
-    }
-
-    const res = await this.productService.getBrands(options).exec()
-
-    if (req.query.sort) {
-      // res.sort({
-        // price: req.query.sort
-      // })
-    }
-    console.log(res)
-
-    return res
-    // return await this.productService.getBrands(options)
+  async getBrands(): Promise<Brand[]> {
+    return this.productService.getBrands();
   }
 
   @Post('brand/')

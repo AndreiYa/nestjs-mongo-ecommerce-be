@@ -55,8 +55,8 @@ export class ProductService {
 
   // BRANDS
 
-  getBrands(options: any) {
-    return this.brandModel.find(options)
+  async getBrands() {
+    return this.brandModel.find();
   }
 
   async addBrand(brandDto: BrandDTO): Promise<Brand> {
