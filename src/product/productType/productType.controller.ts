@@ -9,7 +9,7 @@ import {IdValidationPipe} from "../../helpers/pipes/idValidation.pipe";
 import {ProductTypeDTO} from "./dto/productType.dto";
 
 
-@Controller('store/product/')
+@Controller('store/')
 export class ProductTypeController {
   constructor(private productTypeService: ProductTypeService) {}
 
