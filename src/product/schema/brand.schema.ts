@@ -5,13 +5,13 @@ export type BrandDocument = Brand & Document;
 
 @Schema()
 export class Brand {
-  @Prop()
+  @Prop({type: String})
   name: string;
 
-  @Prop()
-  description: string;
+  @Prop({type: String})
+  description?: string;
 
-  @Prop()
+  @Prop({type: String})
   origin: string;
 }
 

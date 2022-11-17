@@ -9,33 +9,36 @@ import {OrderHistoryItem} from "./orderHistoryItem.schema";
 
 export type OrderDocument = Order & Document;
 
-@Schema()
+@Schema({timestamps: true})
 export class Order {
-  @Prop()
+  @Prop({type: String})
   orderCode: string;
 
-  @Prop()
+  @Prop({type: () => Customer})
   customer: Customer;
 
   @Prop({ type: () => Date })
   startDate: Date;
 
-  @Prop()
+  @Prop({type: () => OrderState})
   state: OrderState;
 
-  @Prop()
+  @Prop({type: () => Delivery})
   delivery: Delivery;
 
-  @Prop()
+  @Prop({type: () => PaymentMethod})
   paymentMethod: PaymentMethod;
 
   @Prop({type: () => [CartItem]})
-  cartItems: CartItem[]
+  cartItems: CartItem[];
 
-  @Prop()
+  @Prop({type: Number})
+  subTotalPrice: number;
+
+  @Prop({type: Number})
   totalPrice: number;
 
-  @Prop()
+  @Prop({type: Number})
   totalDiscount: number;
 
   @Prop({type: () => [OrderHistoryItem]})

@@ -2,10 +2,10 @@ import {Injectable} from '@nestjs/common';
 import {Model} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import {Product, ProductDocument} from './schema/product.schema';
-import {CreateProductDTO} from "./dto/create-product.dto";
-import {FilterProductDTO} from "./dto/filter-product.dto";
 import {Brand, BrandDocument} from "./schema/brand.schema";
-import {BrandDto} from "./dto/brand.dto";
+import {BrandDTO} from "./dto/brand.dto";
+import {FilterProductDTO} from "./dto/filterProduct.dto";
+import {CreateProductDTO} from "./dto/createProduct.dto";
 
 @Injectable()
 export class ProductService {
@@ -33,13 +33,11 @@ export class ProductService {
   }
 
   async getAllProducts(): Promise<Product[]> {
-    const products = await this.productModel.find().exec();
-    return products;
+    return await this.productModel.find().exec();
   }
 
   async getProduct(id: string): Promise<Product> {
-    const product = await this.productModel.findById(id).exec();
-    return product;
+    return await this.productModel.findById(id).exec();
   }
 
   async addProduct(createProductDTO: CreateProductDTO): Promise<Product> {
@@ -48,28 +46,25 @@ export class ProductService {
   }
 
   async updateProduct(id: string, createProductDTO: CreateProductDTO): Promise<Product> {
-    const updatedProduct = await this.productModel
-      .findByIdAndUpdate(id, createProductDTO, { new: true });
-    return updatedProduct;
+    return this.productModel.findByIdAndUpdate(id, createProductDTO, {new: true});
   }
 
   async deleteProduct(id: string): Promise<any> {
-    const deletedProduct = await this.productModel.findByIdAndRemove(id);
-    return deletedProduct;
+    return this.productModel.findByIdAndRemove(id);
   }
 
   // BRANDS
 
-  async getBrands(): Promise<Brand[]> {
-    return this.brandModel.find().exec()
+  getBrands(options: any) {
+    return this.brandModel.find(options)
   }
 
-  async addBrand(brandDto: BrandDto): Promise<Brand> {
+  async addBrand(brandDto: BrandDTO): Promise<Brand> {
     const newBrand = await this.brandModel.create(brandDto)
     return newBrand.save()
   }
 
-  async updateBrand(id: string, brandDto: BrandDto): Promise<Brand> {
+  async updateBrand(id: string, brandDto: BrandDTO): Promise<Brand> {
     return this.brandModel.findByIdAndUpdate(id, brandDto, {new: true});
   }
 

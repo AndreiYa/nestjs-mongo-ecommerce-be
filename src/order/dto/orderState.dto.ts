@@ -1,7 +1,7 @@
 import {StateColor} from "../enums/stateColor.enum";
 import {IsEnum, IsNotEmpty, IsOptional, IsString} from "class-validator";
 
-export class OrderStateDto {
+export class OrderStateDTO {
   @IsString()
   @IsNotEmpty()
   label: string;

@@ -9,7 +9,7 @@ export class CreateUserDTO {
   readonly email?: string;
 
   @IsNotEmpty()
-  readonly password: string;
+  password: string;
 
   readonly roles: string[];
 }

@@ -1,7 +1,7 @@
 import {IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
-import {BrandDto} from "./brand.dto";
 import {Type} from "class-transformer";
-import {ProductPropertyValueDto} from "./productPropertyValue.dto";
+import {ProductPropsDTO} from "./productProps.dto";
+import {BrandDTO} from "./brand.dto";
 
 export class CreateProductDTO {
   @IsString()
@@ -9,7 +9,7 @@ export class CreateProductDTO {
   name: string;
 
   @IsArray()
-  @IsString({each: true})
+  @IsString({ each: true })
   @IsNotEmpty()
   media: string[];
 
@@ -18,15 +18,15 @@ export class CreateProductDTO {
   price: number;
 
   @IsNotEmpty()
-  @Type(() => BrandDto)
-  brand: BrandDto;
+  @Type(() => BrandDTO)
+  brand: BrandDTO;
 
   @IsString()
   @IsNotEmpty()
   description: string;
 
   @IsArray()
-  @IsString({each: true} )
+  @IsString({ each: true })
   categoriesIds: string[];
 
   @IsString()
@@ -35,6 +35,6 @@ export class CreateProductDTO {
 
   @IsArray()
   @ValidateNested()
-  @Type(() => ProductPropertyValueDto)
-  productProps: ProductPropertyValueDto[];
+  @Type(() => ProductPropsDTO)
+  productProps: ProductPropsDTO[];
 }

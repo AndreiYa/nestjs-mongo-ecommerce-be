@@ -7,6 +7,7 @@ import { RolesGuard } from './guards/roles.guard';
 import {CreateUserDTO} from "../user/dto/create-user-dto";
 import {LocalAuthGuard} from "./guards/local.guard";
 import {JwtAuthGuard} from "./guards/jwt.guard";
+import {CurrentUser} from "../user/decorators/user.decorator";
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +38,12 @@ export class AuthController {
   @Get('/admin')
   getDashboard(@Request() req) {
     return req.user;
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getCurrentUser(
+    @CurrentUser() currentUser) {
+    return this.userService.getCurrentUser(currentUser)
   }
 }

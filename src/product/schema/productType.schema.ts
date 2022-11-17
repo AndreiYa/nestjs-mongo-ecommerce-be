@@ -6,8 +6,11 @@ export type ProductTypeDocument = ProductType & Document;
 
 @Schema()
 export class ProductType {
-  @Prop()
+  @Prop({type: String})
   name: string;
+
+  @Prop({type: String})
+  description?: string;
 
   @Prop({type: () => [ProductTypeProperty]})
   properties: ProductTypeProperty[];

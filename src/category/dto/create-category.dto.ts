@@ -1,4 +1,3 @@
-import {ProductType} from "../../product/schema/productType.schema";
 import {IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
 import {Category} from "../schema/category.schema";
 import {Type} from "class-transformer";
@@ -7,6 +6,10 @@ export class CreateCategoryDto {
   @IsString()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  @IsNotEmpty()
+  handle: string;
 
   @IsString()
   @IsOptional()
@@ -18,16 +21,11 @@ export class CreateCategoryDto {
 
   @IsOptional()
   @ValidateNested()
-  @Type(() => Category)
-  parent?: Category;
-
-  @IsOptional()
-  @ValidateNested()
   @IsArray()
   @Type(() => Category)
   children?: Category[];
 
   @IsOptional()
-  @Type(() => ProductType)
-  productType?: ProductType;
+  @IsString()
+  productTypeId?: string;
 }

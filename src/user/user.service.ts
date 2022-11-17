@@ -10,8 +10,8 @@ export class UserService {
   constructor(@InjectModel('User') private readonly userModel: Model<UserDocument>) { }
 
   async addUser(createUserDTO: CreateUserDTO): Promise<User> {
-    const checkUsername = await this.findUserByName(createUserDTO.username)
-    const checkEmail = createUserDTO.email ? await this.findUserByEmail(createUserDTO.email) : null
+    const checkUsername = await this.getUserByName(createUserDTO.username)
+    const checkEmail = createUserDTO.email ? await this.getUserByEmail(createUserDTO.email) : null
 
     if (checkUsername || checkEmail) {
       throw new HttpException('email or username are already taken, please choose another one', HttpStatus.UNPROCESSABLE_ENTITY);
@@ -26,11 +26,28 @@ export class UserService {
     return this.userModel.find().exec();
   }
 
-  async findUserByName(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({username: username});
+  async getCurrentUser(currentUser: User) {
+    return currentUser;
   }
 
-  async findUserByEmail(email: string): Promise<User | undefined> {
-    return this.userModel.findOne({email: email});
+  async getUserByName(username: string): Promise<User | undefined> {
+    return this.userModel.findOne({username});
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return this.userModel.findOne({email});
+  }
+
+  async getUserById(id: string): Promise<User> {
+    return this.userModel.findOne({_id: id});
+  }
+
+  async updateUser(id: string, currentUser: User, createUserDTO: CreateUserDTO): Promise<User> {
+    createUserDTO.password = await bcrypt.hash(String(createUserDTO.password), 10);
+    return this.userModel.findByIdAndUpdate(id, createUserDTO, {new: true});
+  }
+
+  async deleteUser(id: string): Promise<User> {
+    return this.userModel.findByIdAndRemove(id)
   }
 }

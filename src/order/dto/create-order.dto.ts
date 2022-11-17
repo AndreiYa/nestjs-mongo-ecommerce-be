@@ -4,27 +4,27 @@ import {CartItem} from "../../cart/schema/cartItem.schema";
 import {OrderHistoryItem} from "../schema/orderHistoryItem.schema";
 import {IsArray, IsDate, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
-import {CustomerDto} from "./customer.dto";
-import {OrderStateDto} from "./orderState.dto";
+import {CustomerDTO} from "./customer.dto";
+import {OrderStateDTO} from "./orderState.dto";
 
-export class CreateOrderDto {
+export class CreateOrderDTO {
   @IsString()
   @IsNotEmpty()
   orderCode: string;
 
   @ValidateNested()
-  @Type(() => CustomerDto)
+  @Type(() => CustomerDTO)
   @IsNotEmpty()
-  customer: CustomerDto;
+  customer: CustomerDTO;
 
   @IsDate()
   @IsNotEmpty()
   startDate: Date;
 
   @ValidateNested()
-  @Type(() => OrderStateDto)
+  @Type(() => OrderStateDTO)
   @IsNotEmpty()
-  state: OrderStateDto;
+  state: OrderStateDTO;
 
   @ValidateNested()
   @Type(() => Delivery)

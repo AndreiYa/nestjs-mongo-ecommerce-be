@@ -1,13 +1,13 @@
-import {IsNotEmpty, IsString} from "class-validator";
+import {IsNotEmpty, IsOptional, IsString} from "class-validator";
 
-export class BrandDto {
+export class BrandDTO {
   @IsString()
   @IsNotEmpty()
   name: string;
 
   @IsString()
-  @IsNotEmpty()
-  description: string;
+  @IsOptional()
+  description?: string;
 
   @IsString()
   @IsNotEmpty()
