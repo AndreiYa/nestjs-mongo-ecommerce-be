@@ -21,7 +21,6 @@ export class ProductService {
         product.description.includes(search)
       );
     }
-
     // if (category) {
     //   products = products.filter(product => product.category === category)
     // }

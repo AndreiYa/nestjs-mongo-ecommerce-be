@@ -17,6 +17,7 @@ import {Role} from "../auth/enums/role.enum";
 import {Roles} from "../auth/decorators/roles.decorator";
 import {FilterProductDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
+import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
 
 @Controller('store/')
 export class ProductController {
@@ -54,7 +55,7 @@ export class ProductController {
   }
 
   @Delete('product/:id')
-  async deleteProduct(@Param('id') id: string) {
+  async deleteProduct(@Param('id', IdValidationPipe) id: string) {
     const product = await this.productService.deleteProduct(id);
     if (!product) throw new NotFoundException('Product does not exist');
     return product;
