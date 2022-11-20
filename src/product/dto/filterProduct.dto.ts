@@ -1,4 +1,6 @@
 export class FilterProductDTO {
   search: string;
-  category: string;
+  sort: string;
+  limit: number;
+  page: number;
 }

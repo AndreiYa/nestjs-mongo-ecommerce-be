@@ -11,21 +11,38 @@ export class ProductService {
     @InjectModel('Product') private readonly productModel: Model<ProductDocument>
     ) { }
 
-  async getFilteredProducts(filterProductDTO: FilterProductDTO): Promise<Product[]> {
-    const { category, search } = filterProductDTO;
-    let products = await this.getAllProducts();
+  async getFilteredProducts(filterProductDTO: FilterProductDTO) {
+    let option = {}
+    if (filterProductDTO.search) {
+      option = {
+        $or: [
+          {name: new RegExp(filterProductDTO.search.toString(), 'i')},
+          {description: new RegExp(filterProductDTO.search.toString(), 'i')}
+        ]
+      }
 
-    if (search) {
-      products = products.filter(product =>
-        product.name.includes(search) ||
-        product.description.includes(search)
-      );
+      const query = this.productModel.find(option)
+
+      if (filterProductDTO.sort) {
+        query.sort({price: 1})
+      }
+
+      const page: number = parseInt(filterProductDTO.page as any) || 1
+      const limit = filterProductDTO.limit || 9
+      const total = await this.totalCount(option)
+      const data = await query.skip((page - 1) * limit).limit(limit).exec()
+      return {
+        data,
+        total,
+        limit,
+        page,
+        lastPage: Math.ceil(total/limit)
+      }
     }
-    // if (category) {
-    //   products = products.filter(product => product.category === category)
-    // }
+  }
 
-    return products;
+  async totalCount(options) {
+    return this.productModel.count(options).exec()
   }
 
   async getAllProducts(): Promise<Product[]> {
