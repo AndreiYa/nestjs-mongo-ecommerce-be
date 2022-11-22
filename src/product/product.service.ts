@@ -11,6 +11,8 @@ export class ProductService {
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
     let option = {}
+    let data: any = [];
+
     if (filterProductDTO.search) {
       option = {
         $or: [
@@ -25,10 +27,16 @@ export class ProductService {
         query.sort({price: 1})
       }
 
+
       const page: number = parseInt(filterProductDTO.page as any) || 1
       const limit = filterProductDTO.limit || 9
       const total = await this.totalCount(option)
-      const data = await query.skip((page - 1) * limit).limit(limit).exec()
+      if (!filterProductDTO.preview) {
+        data = await query.skip((page - 1) * limit).limit(limit).exec()
+      }  else {
+        data = await query.skip((page - 1) * limit).limit(limit).exec()
+      }
+
       return {
         data,
         total,
