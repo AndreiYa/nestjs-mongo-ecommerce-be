@@ -22,8 +22,8 @@ export class Product {
   @Prop({ type: String })
   description: string;
 
-  @Prop({ type: () => [String] })
-  categoriesIds: string[];
+  @Prop({ type: () => String })
+  categoryId: string;
 
   @Prop({ type: String })
   productTypeId: string;

@@ -25,9 +25,9 @@ export class CreateProductDTO {
   @IsNotEmpty()
   description: string;
 
-  @IsArray()
-  @IsString({ each: true })
-  categoriesIds: string[];
+  @IsString()
+  @IsNotEmpty()
+  categoryId: string;
 
   @IsString()
   @IsNotEmpty()

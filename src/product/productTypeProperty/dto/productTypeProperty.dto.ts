@@ -16,6 +16,10 @@ export class ProductTypePropertyDTO {
   @IsString()
   description?: string
 
+  @IsOptional()
+  @IsString()
+  units?: string
+
   @IsNotEmpty()
   @IsEnum(ProductTypePropertyType)
   type: ProductTypePropertyType

@@ -18,6 +18,11 @@ export class ProductTypeController {
     return this.productTypeService.getProductTypes()
   }
 
+  @Get('type/prev')
+  async getProductTypePreviews(): Promise<ProductType[]> {
+    return this.productTypeService.getProductTypePreviews()
+  }
+
   @Get('type/:id')
   async getProductType(@Param('id', IdValidationPipe) id: string): Promise<ProductType>{
     const productType = await this.productTypeService.getProductType(id)

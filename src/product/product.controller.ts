@@ -33,6 +33,15 @@ export class ProductController {
     }
   }
 
+  @Get('product/prev')
+  async getProductsPreview(@Query() filterProductDTO: FilterProductDTO) {
+    if (Object.keys(filterProductDTO).length) {
+      return await this.productService.getFilteredProductsPreview(filterProductDTO);
+    } else {
+      return await this.productService.getAllProductsPreview();
+    }
+  }
+
   @Get('product/:id')
   async getProduct(@Param('id') id: string) {
     const product = await this.productService.getProduct(id);

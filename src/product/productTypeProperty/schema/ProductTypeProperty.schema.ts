@@ -18,6 +18,9 @@ export class ProductTypeProperty {
   @Prop({type: String})
   description?: string;
 
+  @Prop({type: String})
+  units?: string;
+
   @Prop({type: [String], enum: ProductTypePropertyType })
   type: ProductTypePropertyType
 

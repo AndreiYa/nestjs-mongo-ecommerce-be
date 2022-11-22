@@ -7,9 +7,7 @@ import {CreateProductDTO} from "./dto/createProduct.dto";
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @InjectModel('Product') private readonly productModel: Model<ProductDocument>
-    ) { }
+  constructor(@InjectModel('Product') private readonly productModel: Model<ProductDocument>) {}
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
     let option = {}

@@ -15,6 +15,15 @@ export class ProductTypeService {
     return this.productTypeModel.find().exec()
   }
 
+  async getProductTypePreviews(): Promise<ProductType[]> {
+    return this.productTypeModel.aggregate([
+      { $addFields: {
+          propertiesLength: { $cond: { if: { $isArray: "$properties" }, then: { $size: "$properties" }, else: "NA"} }
+        }},
+      { $unset: 'properties'}
+    ]).exec()
+  }
+
   async getProductType(id: string): Promise<ProductType>{
     return this.productTypeModel.findById(id)
   }
