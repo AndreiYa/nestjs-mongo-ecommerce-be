@@ -2,7 +2,7 @@ import {Delivery} from "../schema/delivery.schema";
 import {PaymentMethod} from "../schema/paymentMethod.schema";
 import {CartItem} from "../../cart/schema/cartItem.schema";
 import {OrderHistoryItem} from "../schema/orderHistoryItem.schema";
-import {IsArray, IsDateString, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
+import {IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {CustomerDTO} from "./customer.dto";
 import {OrderStateDTO} from "./orderState.dto";
@@ -16,10 +16,6 @@ export class CreateOrderDTO {
   @Type(() => CustomerDTO)
   @IsNotEmpty()
   customer: CustomerDTO;
-
-  @IsDateString()
-  @IsNotEmpty()
-  startDate: Date;
 
   @ValidateNested()
   @Type(() => OrderStateDTO)
