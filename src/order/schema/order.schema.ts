@@ -17,9 +17,6 @@ export class Order {
   @Prop({type: () => Customer})
   customer: Customer;
 
-  @Prop({ type: () => Date })
-  startDate: Date;
-
   @Prop({type: () => OrderState})
   state: OrderState;
 
