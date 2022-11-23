@@ -21,7 +21,7 @@ export class ProductTypeProperty {
   @Prop({type: String})
   units?: string;
 
-  @Prop({type: [String], enum: ProductTypePropertyType })
+  @Prop({type: String, enum: ProductTypePropertyType })
   type: ProductTypePropertyType
 
   @Prop({type: () => [String] || [Number]})
