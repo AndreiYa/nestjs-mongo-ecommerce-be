@@ -1,9 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, SchemaTypes } from 'mongoose';
+import * as autoPopulate from 'mongoose-autopopulate';
 
 export type CategoryDocument = Category & Document;
 
-@Schema({timestamps: true})
+@Schema()
 export class Category {
   @Prop({ type: String, required: true })
   name: string;
@@ -17,7 +18,7 @@ export class Category {
   @Prop({ type: () => [String] })
   media: string[];
 
-  @Prop({ type: () => [Category] })
+  @Prop([{ type: SchemaTypes.ObjectId, ref: Category.name, autopopulate: true }])
   children?: Category[];
 
   @Prop({ type: String})
@@ -25,3 +26,4 @@ export class Category {
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
+CategorySchema.plugin<any>(autoPopulate);

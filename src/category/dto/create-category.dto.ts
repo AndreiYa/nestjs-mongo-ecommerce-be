@@ -1,6 +1,4 @@
-import {IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
-import {Category} from "../schema/category.schema";
-import {Type} from "class-transformer";
+import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateCategoryDto {
   @IsString()
@@ -20,10 +18,9 @@ export class CreateCategoryDto {
   media: string[];
 
   @IsOptional()
-  @ValidateNested()
   @IsArray()
-  @Type(() => Category)
-  children?: Category[];
+  @IsString({each: true})
+  children?: string[];
 
   @IsOptional()
   @IsString()
