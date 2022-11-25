@@ -59,7 +59,7 @@ export class CategoryService {
     if (fromCategoryChildIndex === -1) {
       throw new HttpException(`Category with id ${categoryId} not found in category with id ${fromCategory._id.toString()}`, HttpStatus.NOT_FOUND)
     }
-    fromCategoryUpdateDto.children.splice(fromCategoryUpdateDto.children.indexOf(categoryId), 1)
+    fromCategoryUpdateDto.children.splice(fromCategoryChildIndex, 1)
     toCategoryUpdateDto.children.push(categoryId)
     return Promise.all([
       this.updateCategory(fromCategory._id.toString(), fromCategoryUpdateDto),
@@ -74,7 +74,23 @@ export class CategoryService {
   }
 
   async deleteCategory(id: string): Promise<Category> {
-    return this.categoryModel.findByIdAndRemove(id)
+    const parentCategory = await this.categoryModel.findOne({
+      children: {
+        $elemMatch: {
+          $eq: id
+        }
+      }
+    })
+    if (parentCategory) {
+      const parentCategoryUpdateDto = this.getUpdateCategoryDto(parentCategory)
+      const parentCategoryChildIndex = parentCategoryUpdateDto.children.indexOf(id)
+      parentCategoryUpdateDto.children.splice(parentCategoryChildIndex, 1)
+      return this.updateCategory(parentCategory._id.toString(), parentCategoryUpdateDto).then(() => {
+        return this.categoryModel.findByIdAndRemove(id)
+      });
+    } else {
+      return this.categoryModel.findByIdAndRemove(id)
+    }
   }
 
   private getUpdateCategoryDto({name, handle, description, media, children, productTypeId}: any): UpdateCategoryDto {
