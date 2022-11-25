@@ -1,10 +1,6 @@
-import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class CreateCategoryDto {
-  @IsString()
-  @IsOptional()
-  parent?: string;
-
+export class UpdateCategoryDto {
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -22,10 +18,11 @@ export class CreateCategoryDto {
   media: string[];
 
   @IsOptional()
-  @IsString()
-  productTypeId?: string;
+  @IsArray()
+  @IsString({each: true})
+  children?: string[];
 
   @IsOptional()
-  @IsBoolean()
-  root?: boolean;
+  @IsString()
+  productTypeId?: string;
 }
