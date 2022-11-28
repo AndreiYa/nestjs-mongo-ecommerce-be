@@ -23,6 +23,9 @@ export class Category {
 
   @Prop({ type: String})
   productTypeId?: string;
+
+  @Prop({ type: Boolean })
+  root?: boolean;
 }
 
 export const CategorySchema = SchemaFactory.createForClass(Category);
