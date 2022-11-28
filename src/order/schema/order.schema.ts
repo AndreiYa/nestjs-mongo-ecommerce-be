@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import {Customer} from "./customer.schema";
-import {OrderState} from "./orderState.schema";
+import {OrderState} from "../orderState/schema/orderState.schema";
 import {PaymentMethod} from "./paymentMethod.schema";
 import {CartItem} from "../../cart/schema/cartItem.schema";
 import {Delivery} from "./delivery.schema";

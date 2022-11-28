@@ -12,7 +12,11 @@ export class ProductTypeService {
   ) { }
 
   async getProductTypes(): Promise<ProductType[]> {
-    return this.productTypeModel.find().exec()
+    return this.productTypeModel.aggregate([
+      {
+        "$lookup" : { from: 'producttypeproperties', localField: "properties", foreignField: "_id", as: "properties" }
+      }
+    ])
   }
 
   async getProductTypePreviews(): Promise<ProductType[]> {

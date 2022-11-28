@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type DeliveryMethodDocument = DeliveryMethod & Document;
 
-@Schema()
+@Schema({timestamps: true})
 export class DeliveryMethod {
   @Prop()
   name: string;

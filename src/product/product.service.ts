@@ -11,31 +11,28 @@ export class ProductService {
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
     let option = {}
-    let data: any = [];
 
     if (filterProductDTO.search) {
-      option = {
-        $or: [
-          {name: new RegExp(filterProductDTO.search.toString(), 'i')},
-          {description: new RegExp(filterProductDTO.search.toString(), 'i')}
-        ]
-      }
-
-      const query = this.productModel.find(option)
-
-      if (filterProductDTO.sort) {
-        query.sort({price: 1})
-      }
-
+      const query = this.productModel.aggregate([
+        {
+          $match: {
+            $or: [
+              {name: new RegExp(filterProductDTO.search.toString(), 'i')},
+              {description: new RegExp(filterProductDTO.search.toString(), 'i')}
+            ]
+          }
+        },
+        // {
+          // $sort: {
+            // `${filterProductDTO.sort}`: filterProductDTO.direction
+          // }
+        // },
+      ])
 
       const page: number = parseInt(filterProductDTO.page as any) || 1
-      const limit = filterProductDTO.limit || 9
+      const limit: number = parseInt(String(filterProductDTO.limit)) || 9
       const total = await this.totalCount(option)
-      if (!filterProductDTO.preview) {
-        data = await query.skip((page - 1) * limit).limit(limit).exec()
-      }  else {
-        data = await query.skip((page - 1) * limit).limit(limit).exec()
-      }
+      const data = await query.skip((page - 1) * limit).limit(limit).exec()
 
       return {
         data,
@@ -52,23 +49,23 @@ export class ProductService {
   }
 
   async getAllProducts(): Promise<Product[]> {
-    return await this.productModel.find().exec();
+    return await this.productModel.find().exec()
   }
 
   async getProduct(id: string): Promise<Product> {
-    return await this.productModel.findById(id).exec();
+    return await this.productModel.findById(id).exec()
   }
 
   async addProduct(createProductDTO: CreateProductDTO): Promise<Product> {
-    const newProduct = await this.productModel.create(createProductDTO);
-    return newProduct.save();
+    const newProduct = await this.productModel.create(createProductDTO)
+    return newProduct.save()
   }
 
   async updateProduct(id: string, createProductDTO: CreateProductDTO): Promise<Product> {
-    return this.productModel.findByIdAndUpdate(id, createProductDTO, {new: true});
+    return this.productModel.findByIdAndUpdate(id, createProductDTO, {new: true})
   }
 
   async deleteProduct(id: string): Promise<any> {
-    return this.productModel.findByIdAndRemove(id);
+    return this.productModel.findByIdAndRemove(id)
   }
 }

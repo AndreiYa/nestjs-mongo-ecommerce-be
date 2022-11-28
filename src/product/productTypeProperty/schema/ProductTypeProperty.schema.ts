@@ -22,7 +22,7 @@ export class ProductTypeProperty {
   units?: string;
 
   @Prop({type: String, enum: ProductTypePropertyType })
-  type: ProductTypePropertyType
+  type: ProductTypePropertyType;
 
   @Prop({type: () => [String] || [Number]})
   options?: string[] | number[];

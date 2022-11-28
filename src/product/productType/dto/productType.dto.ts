@@ -1,6 +1,4 @@
-import {IsNotEmpty, IsOptional, IsString} from "class-validator";
-import {Type} from "class-transformer";
-import {ProductTypePropertyDTO} from "../../productTypeProperty/dto/productTypeProperty.dto";
+import {IsArray, IsNotEmpty, IsOptional, IsString} from "class-validator";
 
 export class ProductTypeDTO {
   @IsString()
@@ -12,6 +10,6 @@ export class ProductTypeDTO {
   description?: string;
 
   @IsNotEmpty()
-  @Type(() => ProductTypePropertyDTO)
-  properties: ProductTypePropertyDTO[];
+  @IsArray()
+  properties: string[];
 }

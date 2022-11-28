@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import {StateColor} from "../enums/stateColor.enum";
+import {StateColor} from "../../enums/stateColor.enum";
 
 export type OrderStateDocument = OrderState & Document;
 

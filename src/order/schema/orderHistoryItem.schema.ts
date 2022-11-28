@@ -5,16 +5,13 @@ import {Product} from "../../product/schema/product.schema";
 
 export type OrderHistoryItemDocument = OrderHistoryItem & Document;
 
-@Schema()
+@Schema({timestamps: true})
 export class OrderHistoryItem {
   @Prop({type: [String], enum: OrderHistoryEnum})
   type: OrderHistoryEnum;
 
   @Prop()
   details?: string;
-
-  @Prop({type: () => Date})
-  media: Date;
 
   @Prop({type: () => [Product]})
   products?: Product[]

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import {DeliveryMethod} from "./deliveryMethod.schema";
+import {DeliveryMethod} from "../deliveryMethod/schema/deliveryMethod.schema";
 
 export type DeliveryDocument = Delivery & Document;
 

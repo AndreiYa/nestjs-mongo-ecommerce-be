@@ -5,7 +5,7 @@ import {OrderHistoryItem} from "../schema/orderHistoryItem.schema";
 import {IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {CustomerDTO} from "./customer.dto";
-import {OrderStateDTO} from "./orderState.dto";
+import {OrderStateDTO} from "../orderState/dto/orderState.dto";
 
 export class CreateOrderDTO {
   @IsString()
