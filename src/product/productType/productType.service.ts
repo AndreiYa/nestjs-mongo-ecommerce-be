@@ -29,7 +29,7 @@ export class ProductTypeService {
   }
 
   async getProductType(id: string): Promise<ProductType>{
-    return this.productTypeModel.findById(id)
+    return this.productTypeModel.findById(id).populate('properties').exec()
   }
 
   async addProductType(productTypeDTO: ProductTypeDTO): Promise<ProductType>{
