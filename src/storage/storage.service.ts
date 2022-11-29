@@ -2,9 +2,11 @@ import {Injectable} from '@nestjs/common';
 import {StorageResponse} from "./dto/storage.response";
 import {format} from "date-fns";
 import {path} from 'app-root-path';
-import {ensureDir, writeFile} from "fs-extra";
+import {ensureDir, opendir, readdir, remove, stat, writeFile} from "fs-extra";
 import {MFile} from "./helpers/mfile.class";
 import * as sharp from "sharp";
+import {DeleteDTO} from "./dto/delete.dto";
+import {resolve} from "path";
 
 @Injectable()
 export class StorageService {
@@ -27,7 +29,7 @@ export class StorageService {
       .toBuffer()
   }
 
-  async covertAndSave(files: MFile[]) {
+  async convertAndSave(files: MFile[]) {
     const convertBucket: MFile[] = []
     for (const file of files) {
       const convert = {
@@ -37,5 +39,26 @@ export class StorageService {
       convertBucket.push(convert)
     }
     return this.saveFiles(convertBucket)
+  }
+
+  async getStorage() {
+    const PATH = `${path}/storage/`
+    return await this.getFiles(PATH)
+  }
+
+  async getFiles(dir) {
+    const subFolders = await readdir(dir);
+    const files = []
+      await Promise.all(subFolders.map(async (subFolder) => {
+      const res = resolve(dir, subFolder);
+      files.push(res)
+      return (await stat(res)).isDirectory() ? this.getFiles(res) : res;
+    }));
+    return files
+  }
+
+  async deleteFile(deleteDTO: DeleteDTO) {
+    await remove(`${path}/storage/${deleteDTO.folder}/${deleteDTO.name}`)
+    const isEmptyDir = await opendir(`${path}/storage/${deleteDTO.folder}/`)
   }
 }

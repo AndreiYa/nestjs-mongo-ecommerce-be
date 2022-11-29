@@ -10,41 +10,57 @@ export class ProductService {
   constructor(@InjectModel('Product') private readonly productModel: Model<ProductDocument>) {}
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
-    let option = {}
+    const aggregate: any[] = [{
+      $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}
+    }]
 
-    if (filterProductDTO.search) {
-      const query = this.productModel.aggregate([
+    if (filterProductDTO.search && filterProductDTO.search !== '') {
+      aggregate.push(
         {
           $match: {
             $or: [
               {name: new RegExp(filterProductDTO.search.toString(), 'i')},
               {description: new RegExp(filterProductDTO.search.toString(), 'i')}
             ]
-          }
-        },
-        // {
-          // $sort: {
-            // `${filterProductDTO.sort}`: filterProductDTO.direction
-          // }
-        // },
-      ])
+          },
+        }
+      )
+    }
 
-      const page: number = parseInt(filterProductDTO.page as any) || 1
-      const limit: number = parseInt(String(filterProductDTO.limit)) || 9
-      const total = await this.totalCount(option)
-      const data = await query.skip((page - 1) * limit).limit(limit).exec()
+    if (filterProductDTO.sort) {
+      const sortOperator = { "$sort": { } }, sort = filterProductDTO.sort;
+      sortOperator["$sort"][sort] = +filterProductDTO.asc || 1
+      aggregate.push(sortOperator)
+    }
 
-      return {
-        data,
-        total,
-        limit,
-        page,
-        lastPage: Math.ceil(total/limit)
-      }
+    if (filterProductDTO.preview && filterProductDTO.preview as any === 'true') {
+      aggregate.push(
+        {
+        $unset: ['productTypeId', 'productProps']
+      },
+        {
+          $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryName'}
+        }
+      )
+    }
+
+    const query = this.productModel.aggregate([...aggregate])
+
+    const page: number = parseInt(filterProductDTO.page as any) || 1
+    const limit: number = parseInt(String(filterProductDTO.limit)) || 9
+    const total = await this.totalCount()
+    const data = await query.skip((page - 1) * limit).limit(limit).exec()
+
+    return {
+      data,
+      total,
+      limit,
+      page,
+      lastPage: Math.ceil(total/limit)
     }
   }
 
-  async totalCount(options) {
+  async totalCount(options?) {
     return this.productModel.count(options).exec()
   }
 
