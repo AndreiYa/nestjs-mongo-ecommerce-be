@@ -1,7 +1,6 @@
 import {IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {ProductPropsDTO} from "./productProps.dto";
-import {BrandDTO} from "../brand/dto/brand.dto";
 
 export class CreateProductDTO {
   @IsString()
@@ -17,9 +16,9 @@ export class CreateProductDTO {
   @IsNotEmpty()
   price: number;
 
+  @IsString()
   @IsNotEmpty()
-  @Type(() => BrandDTO)
-  brand: BrandDTO;
+  brand: string;
 
   @IsString()
   @IsNotEmpty()
