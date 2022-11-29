@@ -66,14 +66,20 @@ export class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
     return this.productModel.aggregate([
-      {
-        $lookup: {
-          from: 'brands',
-          let: {'id': {$toObjectId: "$brand"}},
-          pipeline:[
-            {"$match": {"$expr":[ {"_id": "$$id"}]}},
-          ],
-          as: 'brand'}}
+      // {
+      //   $lookup: {
+      //     from: 'brands',
+      //     let: {'id': {$toObjectId: "$brand"}},
+      //     pipeline:[
+      //       {"$match": {"$expr":[ {"_id": "$$id"}]}},
+      //     ],
+      //     as: 'brand'}}
+      { $addFields: {
+          convertedId: {$toObjectId: "$brand"}
+        }},
+      { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
+      { $unset: 'convertedId' },
+      { $unwind: '$brand'},
     ]).exec()
   }
 
