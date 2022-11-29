@@ -10,9 +10,15 @@ export class ProductService {
   constructor(@InjectModel('Product') private readonly productModel: Model<ProductDocument>) {}
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
-    const aggregate: any[] = [{
-      $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}
-    }]
+    const aggregate: any[] = [
+      // $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}
+      { $addFields: {
+          convertedId: {$toObjectId: "$brand"}
+        }},
+      { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
+      { $unset: 'convertedId' },
+      { $unwind: '$brand'},
+    ]
 
     if (filterProductDTO.search && filterProductDTO.search !== '') {
       aggregate.push(
