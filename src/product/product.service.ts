@@ -67,16 +67,27 @@ export class ProductService {
   async getAllProducts(): Promise<Product[]> {
     return this.productModel.aggregate([
       {
-        $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}
-      }
+        $lookup: {
+          from: 'brands',
+          let: {'id': {$toObjectId: "$brand"}},
+          pipeline:[
+            {"$match": {"$expr":[ {"_id": "$$id"}]}},
+          ],
+          as: 'brand'}}
     ]).exec()
   }
 
   async getProduct(id: string): Promise<Product[]> {
     const userId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
-      {$match: { "_id": userId }},
-      {$lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}}
+      { $match: { "_id": userId }},
+      { $lookup: {
+          from: 'brands',
+          let: {'id': {$toObjectId: "$brand"}},
+          pipeline:[
+            {"$match": {"$expr":[ {"_id": "$$id"}]}},
+          ],
+          as: 'brand'}}
     ]).exec()
   }
 
