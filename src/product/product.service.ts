@@ -95,8 +95,9 @@ export class ProductService {
           convertedId: {$toObjectId: "$brand"}
         }},
       { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
-      { $unset: 'convertedId' }
-    ]).exec()
+      { $unset: 'convertedId' },
+      { $unwind: '$brand'},
+    ]).exec().then(items => items[0])
   }
 
   async addProduct(createProductDTO: CreateProductDTO): Promise<Product> {
