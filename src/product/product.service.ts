@@ -81,13 +81,21 @@ export class ProductService {
     const userId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
       { $match: { "_id": userId }},
-      { $lookup: {
-          from: 'brands',
-          let: {'id': {$toObjectId: "$brand"}},
-          pipeline:[
-            {"$match": {"$expr":[ {"_id": "$$id"}]}},
-          ],
-          as: 'brand'}}
+
+      // {
+      //   $lookup: {
+      //     from: 'brands',
+      //     let: {'searchId': {$toObjectId: "$brand"}},
+      //     pipeline:[
+      //       {"$match": {"$expr":{'$eq': ["_id", "$$searchId"]}}},
+      //     ],
+      //     as: 'brand'}}
+
+      { $addFields: {
+          convertedId: {$toObjectId: "$brand"}
+        }},
+      { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
+      { $unset: 'convertedId' }
     ]).exec()
   }
 
