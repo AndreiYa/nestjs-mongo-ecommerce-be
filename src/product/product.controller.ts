@@ -18,6 +18,7 @@ import {Roles} from "../auth/decorators/roles.decorator";
 import {FilterProductDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
 import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
+import {Product} from "./schema/product.schema";
 
 @Controller('store/')
 export class ProductController {
@@ -34,7 +35,7 @@ export class ProductController {
   }
 
   @Get('product/:id')
-  async getProduct(@Param('id') id: string) {
+  async getProduct(@Param('id') id: string): Promise<Product[]> {
     const product = await this.productService.getProduct(id);
     if (!product) throw new NotFoundException('Product does not exist!');
     return product;

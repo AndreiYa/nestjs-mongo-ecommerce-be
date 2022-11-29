@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import {Model} from 'mongoose';
+import mongoose, {Model} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import {Product, ProductDocument} from './schema/product.schema';
 import {FilterProductDTO} from "./dto/filterProduct.dto";
@@ -65,11 +65,19 @@ export class ProductService {
   }
 
   async getAllProducts(): Promise<Product[]> {
-    return await this.productModel.find().exec()
+    return this.productModel.aggregate([
+      {
+        $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}
+      }
+    ]).exec()
   }
 
-  async getProduct(id: string): Promise<Product> {
-    return await this.productModel.findById(id).exec()
+  async getProduct(id: string): Promise<Product[]> {
+    const userId = new mongoose.Types.ObjectId(id)
+    return await this.productModel.aggregate([
+      {$match: { "_id": userId }},
+      {$lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}}
+    ]).exec()
   }
 
   async addProduct(createProductDTO: CreateProductDTO): Promise<Product> {
