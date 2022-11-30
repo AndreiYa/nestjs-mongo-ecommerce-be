@@ -1,24 +1,25 @@
 import {Injectable} from '@nestjs/common';
 import {StorageResponse} from "./dto/storage.response";
-import {format} from "date-fns";
 import {path} from 'app-root-path';
 import {ensureDir, opendir, readdir, remove, stat, writeFile} from "fs-extra";
 import {MFile} from "./helpers/mfile.class";
 import * as sharp from "sharp";
 import {DeleteDTO} from "./dto/delete.dto";
 import {resolve} from "path";
+import {randomBytes} from "crypto";
+import {extname} from "path";
 
 @Injectable()
 export class StorageService {
   async saveFiles(files: MFile[]): Promise<StorageResponse[]>{
-    const dateFolder = format(new Date(), 'yyyy-MM-dd')
-    const uploadFolder = `${path}/storage/${dateFolder}`
+    const uploadFolder = `${path}/storage/images`
     await ensureDir(uploadFolder)
     const res: StorageResponse[] = []
 
     for(const file of files) {
-      await writeFile(`${uploadFolder}/${file.originalname}`, file.buffer)
-      res.push({url: `${dateFolder}/${file.originalname}`, name: file.originalname})
+      const fileName = randomBytes(5).toString("hex") + extname(file.originalname) || '.webp';
+      await writeFile(`${uploadFolder}/${fileName}`, file.buffer)
+      res.push({url: `/storage/images/${fileName}`, name: fileName})
     }
     return res
   }
