@@ -12,7 +12,7 @@ export class ProductService {
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
     const aggregate: any[] = [
       { $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
-      { $unwind: '$brand' },
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
     ]
 
     if (filterProductDTO.search && filterProductDTO.search !== '') {
@@ -39,7 +39,7 @@ export class ProductService {
         { $unset: ['productTypeId', 'productProps'] },
         { $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryId'} },
         { $addFields: {'categoryName': '$categoryId.name' }},
-        { $unwind: '$categoryName' },
+        { $unwind: { path: '$categoryName', preserveNullAndEmptyArrays: true }},
         { $unset: 'categoryId' }
       )
     }
@@ -67,7 +67,7 @@ export class ProductService {
   async getAllProducts(): Promise<Product[]> {
     return this.productModel.aggregate([
       { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
-      { $unwind: '$brand' },
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
     ]).exec()
   }
 
@@ -76,7 +76,7 @@ export class ProductService {
     return await this.productModel.aggregate([
       { $match: { "_id": userId }},
       { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
-      { $unwind: '$brand' }
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }}
     ]).exec().then(items => items[0])
   }
 
