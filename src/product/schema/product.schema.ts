@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import {Document, SchemaTypes} from 'mongoose';
 import {ProductProps} from "./productProps.schema";
 import {Brand} from "../brand/schema/brand.schema";
-import mongoose from "mongoose";
+import {Category} from "../../category/schema/category.schema";
 
 export type ProductDocument = Product & Document;
 
@@ -17,14 +17,14 @@ export class Product {
   @Prop({type: Number })
   price: number;
 
-  @Prop({ type: () => mongoose.Schema.Types.ObjectId, ref: 'Brand'})
-  brand: mongoose.Schema.Types.ObjectId;
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Brand'})
+  brand: Brand;
 
   @Prop({ type: String })
   description: string;
 
-  @Prop({ type: () => mongoose.Schema.Types.ObjectId, ref: 'Category'})
-  categoryId: mongoose.Schema.Types.ObjectId;
+  @Prop({ type: SchemaTypes.ObjectId, ref: 'Category'})
+  categoryId: string;
 
   @Prop({ type: String })
   productTypeId: string;

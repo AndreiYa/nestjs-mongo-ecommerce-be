@@ -11,13 +11,8 @@ export class ProductService {
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
     const aggregate: any[] = [
-      // $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand'}
-      { $addFields: {
-          convertedId: {$toObjectId: "$brand"}
-        }},
-      { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
-      { $unset: 'convertedId' },
-      { $unwind: '$brand'},
+      { $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
+      { $unwind: '$brand' },
     ]
 
     if (filterProductDTO.search && filterProductDTO.search !== '') {
@@ -41,12 +36,11 @@ export class ProductService {
 
     if (filterProductDTO.preview && filterProductDTO.preview as any === 'true') {
       aggregate.push(
-        {
-        $unset: ['productTypeId', 'productProps']
-      },
-        {
-          $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryName'}
-        }
+        { $unset: ['productTypeId', 'productProps'] },
+        { $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryId'} },
+        { $addFields: {'categoryName': '$categoryId.name' }},
+        { $unwind: '$categoryName' },
+        { $unset: 'categoryId' }
       )
     }
 
@@ -72,20 +66,8 @@ export class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
     return this.productModel.aggregate([
-      // {
-      //   $lookup: {
-      //     from: 'brands',
-      //     let: {'id': {$toObjectId: "$brand"}},
-      //     pipeline:[
-      //       {"$match": {"$expr":[ {"_id": "$$id"}]}},
-      //     ],
-      //     as: 'brand'}}
-      { $addFields: {
-          convertedId: {$toObjectId: "$brand"}
-        }},
-      { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
-      { $unset: 'convertedId' },
-      { $unwind: '$brand'},
+      { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
+      { $unwind: '$brand' },
     ]).exec()
   }
 
@@ -93,22 +75,8 @@ export class ProductService {
     const userId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
       { $match: { "_id": userId }},
-
-      // {
-      //   $lookup: {
-      //     from: 'brands',
-      //     let: {'searchId': {$toObjectId: "$brand"}},
-      //     pipeline:[
-      //       {"$match": {"$expr":{'$eq': ["_id", "$$searchId"]}}},
-      //     ],
-      //     as: 'brand'}}
-
-      { $addFields: {
-          convertedId: {$toObjectId: "$brand"}
-        }},
-      { $lookup: { from: 'brands', localField: 'convertedId', foreignField: '_id', as: 'brand' }},
-      { $unset: 'convertedId' },
-      { $unwind: '$brand'},
+      { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
+      { $unwind: '$brand' }
     ]).exec().then(items => items[0])
   }
 
