@@ -19,7 +19,7 @@ export class StorageService {
     for(const file of files) {
       const fileName = randomBytes(5).toString("hex") + extname(file.originalname) || '.webp';
       await writeFile(`${uploadFolder}/${fileName}`, file.buffer)
-      res.push({url: `/storage/images/${fileName}`, name: fileName})
+      res.push({url: `storage/images/${fileName}`, name: fileName})
     }
     return res
   }
