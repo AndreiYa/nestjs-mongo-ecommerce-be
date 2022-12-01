@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 
 export type ArticleDocument = Article & Document;
 
-@Schema()
+@Schema({timestamps: true})
 export class Article {
   @Prop({type: String})
   media: string;
