@@ -8,6 +8,6 @@ export class NotifyController {
 
   @Post()
   async notify(@Body() notifyDTO: NotifyDTO) {
-    return this.telegramService.sendMessage(notifyDTO.name)
+    return this.telegramService.sendMessage(notifyDTO)
   }
 }

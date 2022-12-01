@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {Telegraf} from "telegraf";
 import {ITelegram} from "./interface/telegram.interface";
+import {NotifyDTO} from "./dto/notify.dto";
 
 @Injectable()
 export class NotifyService {
@@ -15,8 +16,9 @@ export class NotifyService {
     this.bot = new Telegraf(this.options.token)
   }
 
-  async sendMessage(message: string, chartId: string = this.options.chatId) {
-    console.log(message, chartId)
+  async sendMessage(notifyDTO: NotifyDTO, chartId: string = this.options.chatId) {
+    const message = `message type: ${notifyDTO.name}\n` +
+                    `description: ${notifyDTO.description ?? ''}`
     await this.bot.telegram.sendMessage(chartId, message)
   }
 }
