@@ -9,6 +9,7 @@ import { CategoryModule } from './category/category.module';
 import { OrderModule } from './order/order.module';
 import { StorageModule } from './storage/storage.module';
 import { ArticleModule } from './article/article.module';
+import { NotifyModule } from './notify/notify.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { ArticleModule } from './article/article.module';
     CategoryModule,
     OrderModule,
     StorageModule,
-    ArticleModule
+    ArticleModule,
+    NotifyModule
   ],
   controllers: [],
   providers: [],

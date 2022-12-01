@@ -34,7 +34,7 @@ import {OrderStateService} from "./orderState/orderState.service";
       {name: 'Delivery', schema: DeliverySchema},
       {name: 'DeliveryMethod', schema: DeliveryMethodSchema},
       {name: 'PaymentMethod', schema: PaymentMethodSchema}
-    ])
+    ]),
   ]
 })
 export class OrderModule {}
