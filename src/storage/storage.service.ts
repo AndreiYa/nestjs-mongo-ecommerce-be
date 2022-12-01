@@ -5,9 +5,7 @@ import {ensureDir, opendir, readdir, remove, stat, writeFile} from "fs-extra";
 import {MFile} from "./helpers/mfile.class";
 import * as sharp from "sharp";
 import {DeleteDTO} from "./dto/delete.dto";
-import {resolve} from "path";
-import {randomBytes} from "crypto";
-import {extname} from "path";
+import {resolve, parse} from "path";
 
 @Injectable()
 export class StorageService {
@@ -17,9 +15,9 @@ export class StorageService {
     const res: StorageResponse[] = []
 
     for(const file of files) {
-      const fileName = randomBytes(5).toString("hex") + extname(file.originalname) || '.webp';
+      const fileName = file.originalname;
       await writeFile(`${uploadFolder}/${fileName}`, file.buffer)
-      res.push({url: `storage/images/${fileName}`, name: fileName})
+      res.push({url: `storage/images/${fileName}`, name: fileName, shortName: parse(file.originalname).name})
     }
     return res
   }
