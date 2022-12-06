@@ -15,9 +15,7 @@ export class ArticleService {
     if (!filterArticleDTO) {
       return this.articleModel.find().exec()
     }
-
     const aggregate: PipelineStage[] = [];
-
     if (filterArticleDTO.search && filterArticleDTO.search !== '') {
       aggregate.push(
         {
@@ -38,7 +36,7 @@ export class ArticleService {
       aggregate.push(
         {
           $match: {
-            tags: {$in: tags }
+            tags: {$all: tags}
           }
         }
       )

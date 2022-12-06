@@ -72,9 +72,9 @@ export class ProductService {
   }
 
   async getProduct(id: string): Promise<Product[]> {
-    const userId = new mongoose.Types.ObjectId(id)
+    const productId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
-      { $match: { "_id": userId }},
+      { $match: { "_id": productId }},
       { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
       { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }}
     ]).exec().then(items => items[0])

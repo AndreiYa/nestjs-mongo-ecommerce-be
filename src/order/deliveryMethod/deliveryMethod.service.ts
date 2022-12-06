@@ -1,7 +1,7 @@
 import {Injectable} from "@nestjs/common";
 import {InjectModel} from "@nestjs/mongoose";
 import {DeliveryMethod} from "./schema/deliveryMethod.schema";
-import {Model} from "mongoose";
+import mongoose, {Model} from "mongoose";
 import {DeliveryMethodDTO} from "./dto/deliveryMethod.dto";
 
 
@@ -10,11 +10,17 @@ export class DeliveryMethodService {
   constructor(@InjectModel('DeliveryMethod') private readonly deliveryMethodModel: Model<DeliveryMethod>) {}
 
   async getDeliveryMethods(): Promise<DeliveryMethod[]> {
-    return this.deliveryMethodModel.find().exec()
+    return this.deliveryMethodModel.aggregate([
+      { $lookup : { from: 'paymentmethods', localField: "paymentMethod", foreignField: "_id", as: "paymentMethod" }}
+    ]).exec()
   }
 
-  async getDeliveryMethodById(id: string): Promise<DeliveryMethod> {
-    return this.deliveryMethodModel.findById(id).exec()
+  async getDeliveryMethodById(id: string) {
+    const productId = new mongoose.Types.ObjectId(id)
+    return this.deliveryMethodModel.aggregate([
+      { $match: { "_id": productId }},
+      { $lookup : { from: 'paymentmethods', localField: "paymentMethod", foreignField: "_id", as: "paymentMethod" }}
+    ]).exec()
   }
 
   async addDeliveryMethod(deliveryMethodDTO: DeliveryMethodDTO): Promise<DeliveryMethod> {

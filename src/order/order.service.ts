@@ -3,6 +3,7 @@ import {Model} from "mongoose";
 import {Order} from "./schema/order.schema";
 import {CreateOrderDTO} from "./dto/create-order.dto";
 import {InjectModel} from "@nestjs/mongoose";
+import {nanoid} from "nanoid";
 
 @Injectable()
 export class OrderService {
@@ -17,8 +18,18 @@ export class OrderService {
   }
 
   async addOrder(createOrderDTO: CreateOrderDTO): Promise<Order> {
+    const orderCode = nanoid(6)
+    const checkCode = await this.isUnique(orderCode)
+    if (checkCode && checkCode.length !== 0) {
+      return this.addOrder(createOrderDTO)
+    }
+    createOrderDTO.orderCode = orderCode
     const newOrder = await this.orderModel.create(createOrderDTO)
     return newOrder.save()
+  }
+
+  async isUnique(orderCode: string) {
+    return this.orderModel.find( {orderCode: orderCode})
   }
 
   async updateOrder(id: string, createOrderDTO: CreateOrderDTO): Promise<Order> {

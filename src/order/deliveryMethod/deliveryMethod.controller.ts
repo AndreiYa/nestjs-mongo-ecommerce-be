@@ -23,7 +23,7 @@ export class DeliveryMethodController {
   @Get('/delivery-method/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async getDeliveryMethodById(@Param('id', IdValidationPipe) id: string): Promise<DeliveryMethod> {
+  async getDeliveryMethodById(@Param('id', IdValidationPipe) id: string) {
     const deliveryMethod = await this.deliveryMethodService.getDeliveryMethodById(id)
     if (!deliveryMethod) throw new NotFoundException('DeliveryMethod does not exist!')
     return deliveryMethod
