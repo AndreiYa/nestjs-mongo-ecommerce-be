@@ -38,6 +38,10 @@ export class CreateOrderDTO {
 
   @IsNumber()
   @IsNotEmpty()
+  subTotalPrice: number;
+
+  @IsNumber()
+  @IsNotEmpty()
   totalPrice: number;
 
   @IsNumber()

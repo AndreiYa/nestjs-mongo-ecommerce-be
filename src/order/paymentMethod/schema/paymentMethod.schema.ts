@@ -10,9 +10,6 @@ export class PaymentMethod {
 
   @Prop({type: String})
   description: string;
-
-  @Prop({type: String})
-  media: string;
 }
 
 export const PaymentMethodSchema = SchemaFactory.createForClass(PaymentMethod);

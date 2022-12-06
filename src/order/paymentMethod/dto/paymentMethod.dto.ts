@@ -8,8 +8,4 @@ export class PaymentMethodDTO {
   @IsString()
   @IsNotEmpty()
   description: string;
-
-  @IsString()
-  @IsNotEmpty()
-  media: string;
 }

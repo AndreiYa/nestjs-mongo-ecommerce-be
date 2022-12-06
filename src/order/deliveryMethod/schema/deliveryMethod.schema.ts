@@ -20,14 +20,11 @@ export class DeliveryMethod {
   @Prop({type: String})
   description: string;
 
-  @Prop({type: String})
-  media: string;
-
   @Prop({type: () => [DeliveryMethodField]})
   fields: DeliveryMethodField[]
 
   @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'PaymentMethod'})
-  paymentMethod: mongoose.Schema.Types.ObjectId[];
+  paymentMethods: mongoose.Schema.Types.ObjectId[];
 }
 
 export const DeliveryMethodSchema = SchemaFactory.createForClass(DeliveryMethod);

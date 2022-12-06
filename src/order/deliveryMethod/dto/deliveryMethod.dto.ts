@@ -20,13 +20,14 @@ export class DeliveryMethodDTO {
   @IsNotEmpty()
   description: string;
 
-  @IsString()
-  @IsNotEmpty()
-  media: string;
-
   @ValidateNested()
   @Type(() => DeliveryMethodFieldDTO)
   @IsNotEmpty()
   @IsArray()
   fields: DeliveryMethodFieldDTO
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsNotEmpty()
+  paymentMethods: string[];
 }
