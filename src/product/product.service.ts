@@ -1,5 +1,5 @@
 import {Injectable} from '@nestjs/common';
-import mongoose, {Model} from 'mongoose';
+import mongoose, {Model, PipelineStage} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
 import {Product, ProductDocument} from './schema/product.schema';
 import {FilterProductDTO} from "./dto/filterProduct.dto";
@@ -10,7 +10,7 @@ export class ProductService {
   constructor(@InjectModel('Product') private readonly productModel: Model<ProductDocument>) {}
 
   async getFilteredProducts(filterProductDTO: FilterProductDTO) {
-    const aggregate: any[] = [
+    const aggregate: PipelineStage[] = [
       { $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
       { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
     ]

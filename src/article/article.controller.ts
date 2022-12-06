@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards} from '@nestjs/common';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards} from '@nestjs/common';
 import {JwtAuthGuard} from "../auth/guards/jwt.guard";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {Roles} from "../auth/decorators/roles.decorator";
@@ -7,6 +7,7 @@ import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
 import {ArticleService} from "./article.service";
 import {Article} from "./schema/article.schema";
 import {ArticleDTO} from "./dto/article.dto";
+import {FilterArticleDTO} from "./dto/filterArticle.dto.";
 
 @Controller('article')
 export class ArticleController {
@@ -14,8 +15,8 @@ export class ArticleController {
   }
 
   @Get()
-  async getArticles(): Promise<Article[]> {
-    return this.articleService.getArticles();
+  async getArticles(@Query() filterArticleDTO: FilterArticleDTO) {
+    return this.articleService.getArticles(filterArticleDTO);
   }
 
   @Get(':id')
