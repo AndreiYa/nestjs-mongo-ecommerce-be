@@ -13,6 +13,9 @@ export class OrderHistoryItem {
   @Prop()
   details?: string;
 
+  @Prop()
+ time: number;
+
   @Prop({type: () => [Product]})
   products?: Product[]
 }
