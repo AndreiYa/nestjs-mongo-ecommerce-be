@@ -1,15 +1,4 @@
-import {IsArray, IsNotEmpty, IsString, ValidateNested} from "class-validator";
-import {Type} from "class-transformer";
-
-export class DeliveryMethodFieldDTO {
-  @IsString()
-  @IsNotEmpty()
-  code: string;
-
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-}
+import {IsArray, IsNotEmpty, IsString} from "class-validator";
 
 export class DeliveryMethodDTO {
   @IsString()
@@ -20,11 +9,10 @@ export class DeliveryMethodDTO {
   @IsNotEmpty()
   description: string;
 
-  @ValidateNested()
-  @Type(() => DeliveryMethodFieldDTO)
-  @IsNotEmpty()
   @IsArray()
-  fields: DeliveryMethodFieldDTO
+  @IsString({ each: true })
+  @IsNotEmpty()
+  fields: string[];
 
   @IsArray()
   @IsString({ each: true })

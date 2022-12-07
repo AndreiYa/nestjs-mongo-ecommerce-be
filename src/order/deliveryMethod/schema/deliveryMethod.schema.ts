@@ -4,14 +4,6 @@ import mongoose from "mongoose";
 
 export type DeliveryMethodDocument = DeliveryMethod & Document;
 
-class DeliveryMethodField {
-  @Prop({type: String})
-  code: string;
-
-  @Prop({type: String})
-  name: string;
-}
-
 @Schema({timestamps: true})
 export class DeliveryMethod {
   @Prop({type: String})
@@ -20,8 +12,8 @@ export class DeliveryMethod {
   @Prop({type: String})
   description: string;
 
-  @Prop({type: () => [DeliveryMethodField]})
-  fields: DeliveryMethodField[]
+  @Prop({type: () => [String]})
+  fields: string[];
 
   @Prop({type: [mongoose.Schema.Types.ObjectId], ref: 'PaymentMethod'})
   paymentMethods: mongoose.Schema.Types.ObjectId[];

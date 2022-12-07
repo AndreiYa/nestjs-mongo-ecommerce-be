@@ -18,9 +18,6 @@ class Customer {
 
 class DeliveryMethodFieldValue {
   @Prop({type: String})
-  code: string;
-
-  @Prop({type: String})
   name: string;
 
   @Prop({type: String})
