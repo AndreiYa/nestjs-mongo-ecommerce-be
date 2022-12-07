@@ -9,7 +9,7 @@ export class OrderState {
   @Prop()
   label: string;
 
-  @Prop({type: [String], enum: StateColor})
+  @Prop({type: String, enum: StateColor})
   color: StateColor;
 
   @Prop()
