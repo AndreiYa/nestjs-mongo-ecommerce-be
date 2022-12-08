@@ -120,6 +120,26 @@ export class ProductService {
       }
     }
 
+    if (getProductsDTO.customProperties) {
+      const customPropertiesMatchQuery = Object.entries(getProductsDTO.customProperties).reduce((prev, curr) => {
+        const customPropertyId = curr[0];
+        Object.entries(curr[1]).forEach(([comparisonOperator, comparisonValue]) => {
+          prev.push({productProps: {
+              $elemMatch: {
+                  $and: [
+                    { productTypePropertyId: { $eq: customPropertyId } },
+                    { value: { [comparisonOperator]: comparisonValue } },
+                  ]
+              }
+            }});
+        });
+        return prev;
+      }, []);
+      if (customPropertiesMatchQuery.length) {
+        matchQueryArr.push(customPropertiesMatchQuery.length > 1 ? { $and: customPropertiesMatchQuery } : customPropertiesMatchQuery[0]);
+      }
+    }
+
     const aggregate: PipelineStage[] = [
       { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' } },
       { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true } },
