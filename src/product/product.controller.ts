@@ -15,24 +15,24 @@ import {JwtAuthGuard} from "../auth/guards/jwt.guard";
 import {RolesGuard} from "../auth/guards/roles.guard";
 import {Role} from "../auth/enums/role.enum";
 import {Roles} from "../auth/decorators/roles.decorator";
-import {FilterProductDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
 import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
 import {Product} from "./schema/product.schema";
+import { FilterProductDTO, GetProductsDTO } from "./dto/filterProduct.dto";
 
 @Controller('store/')
 export class ProductController {
   constructor(private productService: ProductService) {
   }
 
-  @Get('product/')
-  async getProducts(@Query() filterProductDTO: FilterProductDTO) {
-    if (Object.keys(filterProductDTO).length) {
-      return await this.productService.getFilteredProducts(filterProductDTO);
-    } else {
-      return await this.productService.getAllProducts();
-    }
-  }
+  // @Get('product/')
+  // async getProducts(@Query() filterProductDTO: FilterProductDTO) {
+  //   if (Object.keys(filterProductDTO).length) {
+  //     return await this.productService.getFilteredProducts(filterProductDTO);
+  //   } else {
+  //     return await this.productService.getAllProducts();
+  //   }
+  // }
 
   @Get('product/:id')
   async getProduct(@Param('id') id: string): Promise<Product[]> {
@@ -46,6 +46,11 @@ export class ProductController {
   @Roles(Role.Admin)
   async addProduct(@Body() createProductDTO: CreateProductDTO) {
     return await this.productService.addProduct(createProductDTO);
+  }
+
+  @Post('products/')
+  async getProducts(@Body() getProductsDTO: GetProductsDTO) {
+    return await this.productService.getProducts(getProductsDTO);
   }
 
   @Put('product/:id')
