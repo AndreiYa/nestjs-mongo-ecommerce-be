@@ -31,6 +31,13 @@ export class ProductController {
     return product;
   }
 
+  @Get('autocomplete/:search')
+  async autocomplete(@Param('search') search: string) {
+    const products = await this.productService.autocomplete(search);
+    if (!products) throw new NotFoundException('No results!');
+    return products;
+  }
+
   @Post('product/')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)

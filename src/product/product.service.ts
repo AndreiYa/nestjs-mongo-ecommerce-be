@@ -6,6 +6,7 @@ import {Product, ProductDocument} from './schema/product.schema';
 import {GetProductsComparisonValue, GetProductsDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
 import {objectIdProperties} from "./const/object-id-properties.const";
+import {transliterate} from "./transliteration.func";
 
 @Injectable()
 export class ProductService {
@@ -42,6 +43,29 @@ export class ProductService {
 
   async deleteProduct(id: string): Promise<any> {
     return this.productModel.findByIdAndRemove(id)
+  }
+
+  async autocomplete(search: string): Promise<any> {
+    const aggregate: PipelineStage[] = [
+      {
+        $project: {
+          name: 1,
+          media: { $first: "$media" },
+        }
+      },
+      {
+        $match: {
+          $or: [
+            {name: new RegExp(search.toString(), 'i')},
+            {description: new RegExp(search.toString(), 'i')},
+            {name: new RegExp(transliterate(search.toString()), 'i')},
+            {description: new RegExp(transliterate(search.toString()), 'i')}
+          ]
+        }
+      }
+    ]
+
+    return this.productModel.aggregate([...aggregate]).exec()
   }
 
   async getProducts(getProductsDTO: GetProductsDTO): Promise<any> {
@@ -135,7 +159,6 @@ export class ProductService {
                 lastPage: 1,
               }
             ]
-
           }
         }
       },
