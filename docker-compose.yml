@@ -1,10 +1,10 @@
 version: '3'
 services:
-  top.api:
-    image: docker.pkg.github.com/alaricode/top-api-demo/top-api-demo:develop
-    container_name: top-api
+  hue.EC-Parf.cloud-BE:
+    image: nest-cloud-run:latest
+    container_name: hue.EC-Parf.cloud-BE
     restart: always
     ports:
       - 3000:3000
     volumes:
-      - ./.env:/opt/app/.env
+      - ./env/.prod.env:/opt/app/.env
