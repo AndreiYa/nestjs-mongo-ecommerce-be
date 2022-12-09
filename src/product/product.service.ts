@@ -116,7 +116,16 @@ export class ProductService {
       {
         $addFields: {
           metadata: {
-            $arrayElemAt: [ "$metadata", 0 ]
+            $ifNull: [
+              { $arrayElemAt: [ "$metadata", 0 ] },
+              {
+                total: 0,
+                page,
+                limit,
+                lastPage: 1,
+              }
+            ]
+
           }
         }
       }
