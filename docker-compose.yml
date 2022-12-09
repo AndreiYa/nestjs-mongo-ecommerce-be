@@ -1,8 +1,8 @@
 version: '3'
 services:
   hue.EC-Parf.cloud-BE:
-    image: nest-cloud-run:latest
-    container_name: hue.EC-Parf.cloud-BE
+    image: ghcr.io/andreiya/nestjs-mongo-ecommerce-be/nestjs-mongo-ecommerce-be:develop
+    container_name: nestjs-mongo-ecommerce-be
     restart: always
     ports:
       - 3000:3000
