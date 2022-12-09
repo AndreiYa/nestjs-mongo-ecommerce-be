@@ -106,6 +106,16 @@ export class ProductService {
       aggregate.push(sortOperator);
     }
 
+    if (getProductsDTO.preview) {
+      aggregate.push(
+          { $unset: ['productTypeId', 'productProps'] },
+          { $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryId'} },
+          { $addFields: {'categoryName': '$categoryId.name' }},
+          { $unwind: { path: '$categoryName', preserveNullAndEmptyArrays: true }},
+          { $unset: 'categoryId' }
+      )
+    }
+
     aggregate.push(
       {
         $facet: {
@@ -128,10 +138,10 @@ export class ProductService {
 
           }
         }
-      }
+      },
     )
 
-    return this.productModel.aggregate([...aggregate]).exec()
+    return this.productModel.aggregate([...aggregate]).exec().then(items => items[0])
   }
 
   private toObjectId(value: GetProductsComparisonValue): ObjectId | ObjectId[] {

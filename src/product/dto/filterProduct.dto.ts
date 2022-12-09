@@ -32,6 +32,10 @@ export class GetProductsDTO {
   @IsOptional()
   search?: string;
 
+  @IsBoolean()
+  @IsOptional()
+  preview?: boolean;
+
   @ValidateNested()
   @Type(() => GetProductsSortDTO)
   @IsOptional()
