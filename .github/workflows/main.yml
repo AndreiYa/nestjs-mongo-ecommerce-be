@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@dev
       - name: Publish to registry
-      uses: elgohr/Publish-Docker-Github-Action@main
+      uses: elgohr/Publish-Docker-Github-Action@master
       with:
         registry: docker.pkg.github.com
         name: docker.pkg.github.com/AndreiYa/nestjs-mongo-ecommerce-be/hue-ec.parf-be
