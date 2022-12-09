@@ -7,8 +7,8 @@ export class GetProductsSortDTO {
   property: BasePropertyName;
 
   @IsOptional()
-  @IsBoolean()
-  asc?: boolean;
+  @IsNumber()
+  direction?: -1 | 1;
 }
 
 export class GetProductsPaginationDTO {

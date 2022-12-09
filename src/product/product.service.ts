@@ -46,7 +46,7 @@ export class ProductService {
 
   async getProducts(getProductsDTO: GetProductsDTO): Promise<any> {
     const page: number = parseInt(getProductsDTO?.pagination?.page as any) || 1
-    const limit: number = parseInt(String(getProductsDTO?.pagination?.limit)) || 9
+    const limit: number = parseInt(String(getProductsDTO?.pagination?.limit)) || 10
     const matchQueryArr = [];
 
     if (getProductsDTO.search) {
@@ -102,7 +102,7 @@ export class ProductService {
 
     if (getProductsDTO.sort) {
       const sortOperator = { $sort: { } }, sort = getProductsDTO.sort.property;
-      sortOperator["$sort"][sort] = +getProductsDTO.sort.asc || 1
+      sortOperator["$sort"][sort] = getProductsDTO.sort.direction;
       aggregate.push(sortOperator);
     }
 
