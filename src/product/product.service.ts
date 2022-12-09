@@ -45,8 +45,8 @@ export class ProductService {
   }
 
   async getProducts(getProductsDTO: GetProductsDTO): Promise<any> {
-    const page: number = parseInt(getProductsDTO.pagination.page as any) || 1
-    const limit: number = parseInt(String(getProductsDTO.pagination.limit)) || 9
+    const page: number = parseInt(getProductsDTO?.pagination?.page as any) || 1
+    const limit: number = parseInt(String(getProductsDTO?.pagination?.limit)) || 9
     const matchQueryArr = [];
 
     if (getProductsDTO.search) {
@@ -107,19 +107,19 @@ export class ProductService {
     }
 
     aggregate.push(
-        {
-          $facet: {
-            metadata: [ { $count: "total" }, { $addFields: { page, limit, lastPage: { $ceil: { $divide: ['$total', limit] } } } } ],
-            data: [ { $skip: (page - 1) * limit }, { $limit: limit } ]
-          },
+      {
+        $facet: {
+          metadata: [ { $count: "total" }, { $addFields: { page, limit, lastPage: { $ceil: { $divide: ['$total', limit] } } } } ],
+          data: [ { $skip: (page - 1) * limit }, { $limit: limit } ]
         },
-        {
-          $addFields: {
-            metadata: {
-              $arrayElemAt: [ "$metadata", 0 ]
-            }
+      },
+      {
+        $addFields: {
+          metadata: {
+            $arrayElemAt: [ "$metadata", 0 ]
           }
         }
+      }
     )
 
     return this.productModel.aggregate([...aggregate]).exec()
