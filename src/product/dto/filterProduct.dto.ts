@@ -2,15 +2,6 @@ import { BasePropertyName, ComparisonOperator } from "../enums/product.enum";
 import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 
-export class FilterProductDTO {
-  search: string;
-  sort: string;
-  asc: number;
-  preview: boolean;
-  limit: number;
-  page: number;
-}
-
 export class GetProductsSortDTO {
   @IsEnum(BasePropertyName)
   property: BasePropertyName;

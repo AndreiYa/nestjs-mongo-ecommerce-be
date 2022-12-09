@@ -7,7 +7,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UseGuards
 } from '@nestjs/common';
 import {ProductService} from "./product.service";
@@ -18,21 +17,12 @@ import {Roles} from "../auth/decorators/roles.decorator";
 import {CreateProductDTO} from "./dto/createProduct.dto";
 import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
 import {Product} from "./schema/product.schema";
-import { FilterProductDTO, GetProductsDTO } from "./dto/filterProduct.dto";
+import {GetProductsDTO} from "./dto/filterProduct.dto";
 
 @Controller('store/')
 export class ProductController {
   constructor(private productService: ProductService) {
   }
-
-  // @Get('product/')
-  // async getProducts(@Query() filterProductDTO: FilterProductDTO) {
-  //   if (Object.keys(filterProductDTO).length) {
-  //     return await this.productService.getFilteredProducts(filterProductDTO);
-  //   } else {
-  //     return await this.productService.getAllProducts();
-  //   }
-  // }
 
   @Get('product/:id')
   async getProduct(@Param('id') id: string): Promise<Product[]> {
