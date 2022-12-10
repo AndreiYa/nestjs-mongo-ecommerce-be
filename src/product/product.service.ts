@@ -77,7 +77,9 @@ export class ProductService {
       matchQueryArr.push({
         $or: [
           {name: new RegExp(getProductsDTO.search.toString(), 'i')},
-          {description: new RegExp(getProductsDTO.search.toString(), 'i')}
+          {description: new RegExp(getProductsDTO.search.toString(), 'i')},
+          {name: new RegExp(transliterate(getProductsDTO.search.toString()), 'i')},
+          {description: new RegExp(transliterate(getProductsDTO.search.toString()), 'i')}
         ]
       });
     }
