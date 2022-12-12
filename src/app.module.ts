@@ -14,7 +14,7 @@ import { NotifyModule } from './notify/notify.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `./env/.${process.env.NODE_ENV}.env`
+      // envFilePath: `./env/.${process.env.NODE_ENV}.env`
     }),
     MongooseModule.forRoot(`${process.env.MONGODB_URI}`),
     UserModule,
