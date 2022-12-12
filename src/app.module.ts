@@ -1,7 +1,6 @@
 import {Module} from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
 import { UserModule } from './user/user.module';
-import {ConfigModule} from "@nestjs/config";
 import { ProductModule } from './product/product.module';
 import { AuthModule } from './auth/auth.module';
 import { CartModule } from './cart/cart.module';
@@ -13,10 +12,7 @@ import { NotifyModule } from './notify/notify.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      envFilePath: `./env/.${process.env.NODE_ENV}.env`
-    }),
-    MongooseModule.forRoot(`${process.env.MONGODB_URI}`),
+    MongooseModule.forRoot(`mongodb://root:P@rT0fin)@localhost:27017/shop`),
     UserModule,
     ProductModule,
     AuthModule,
