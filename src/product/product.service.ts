@@ -1,64 +1,16 @@
 import {Injectable} from '@nestjs/common';
 import mongoose, {Model, PipelineStage} from 'mongoose';
 import {InjectModel} from '@nestjs/mongoose';
+import {ObjectId} from 'mongodb';
 import {Product, ProductDocument} from './schema/product.schema';
-import {FilterProductDTO} from "./dto/filterProduct.dto";
+import {GetProductsComparisonValue, GetProductsDTO} from "./dto/filterProduct.dto";
 import {CreateProductDTO} from "./dto/createProduct.dto";
+import {objectIdProperties} from "./const/object-id-properties.const";
+import {transliterate} from "./transliteration.func";
 
 @Injectable()
 export class ProductService {
   constructor(@InjectModel('Product') private readonly productModel: Model<ProductDocument>) {}
-
-  async getFilteredProducts(filterProductDTO: FilterProductDTO) {
-    const aggregate: PipelineStage[] = [
-      { $lookup: {from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
-      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
-    ]
-
-    if (filterProductDTO.search && filterProductDTO.search !== '') {
-      aggregate.push(
-        {
-          $match: {
-            $or: [
-              {name: new RegExp(filterProductDTO.search.toString(), 'i')},
-              {description: new RegExp(filterProductDTO.search.toString(), 'i')}
-            ]
-          },
-        }
-      )
-    }
-
-    if (filterProductDTO.sort) {
-      const sortOperator = { "$sort": { } }, sort = filterProductDTO.sort;
-      sortOperator["$sort"][sort] = +filterProductDTO.asc || 1
-      aggregate.push(sortOperator)
-    }
-
-    if (filterProductDTO.preview && filterProductDTO.preview as any === 'true') {
-      aggregate.push(
-        { $unset: ['productTypeId', 'productProps'] },
-        { $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryId'} },
-        { $addFields: {'categoryName': '$categoryId.name' }},
-        { $unwind: { path: '$categoryName', preserveNullAndEmptyArrays: true }},
-        { $unset: 'categoryId' }
-      )
-    }
-
-    const query = this.productModel.aggregate([...aggregate])
-
-    const page: number = parseInt(filterProductDTO.page as any) || 1
-    const limit: number = parseInt(String(filterProductDTO.limit)) || 9
-    const total = await this.totalCount()
-    const data = await query.skip((page - 1) * limit).limit(limit).exec()
-
-    return {
-      data,
-      total,
-      limit,
-      page,
-      lastPage: Math.ceil(total/limit)
-    }
-  }
 
   async totalCount(options?) {
     return this.productModel.count(options).exec()
@@ -71,12 +23,14 @@ export class ProductService {
     ]).exec()
   }
 
-  async getProduct(id: string): Promise<Product[]> {
+  async getProduct(id: string): Promise<Product> {
     const productId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
       { $match: { "_id": productId }},
       { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
-      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }}
+      { $lookup: { from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'category' }},
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true }},
     ]).exec().then(items => items[0])
   }
 
@@ -91,5 +45,137 @@ export class ProductService {
 
   async deleteProduct(id: string): Promise<any> {
     return this.productModel.findByIdAndRemove(id)
+  }
+
+  async autocomplete(search: string): Promise<any> {
+    const aggregate: PipelineStage[] = [
+      {
+        $project: {
+          name: 1,
+          media: { $first: "$media" },
+        }
+      },
+      {
+        $match: {
+          $or: [
+            {name: new RegExp(search.toString(), 'i')},
+            {description: new RegExp(search.toString(), 'i')},
+            {name: new RegExp(transliterate(search.toString()), 'i')},
+            {description: new RegExp(transliterate(search.toString()), 'i')}
+          ]
+        }
+      }
+    ]
+
+    return this.productModel.aggregate([...aggregate]).exec()
+  }
+
+  async getProducts(getProductsDTO: GetProductsDTO): Promise<any> {
+    const page: number = parseInt(getProductsDTO?.pagination?.page as any) || 1
+    const limit: number = parseInt(String(getProductsDTO?.pagination?.limit)) || 10
+    const matchQueryArr = [];
+
+    if (getProductsDTO.search) {
+      matchQueryArr.push({
+        $or: [
+          {name: new RegExp(getProductsDTO.search.toString(), 'i')},
+          {description: new RegExp(getProductsDTO.search.toString(), 'i')},
+          {name: new RegExp(transliterate(getProductsDTO.search.toString()), 'i')},
+          {description: new RegExp(transliterate(getProductsDTO.search.toString()), 'i')}
+        ]
+      });
+    }
+
+    if (getProductsDTO.baseProperties) {
+      const basePropertiesMatchQuery = Object.entries(getProductsDTO.baseProperties).reduce((prev, curr) => {
+        const basePropertyName = curr[0];
+        Object.entries(curr[1]).forEach(([comparisonOperator, comparisonValue]) => {
+          prev.push({[basePropertyName]: { [comparisonOperator]: objectIdProperties.has(basePropertyName) ? this.toObjectId(comparisonValue) : comparisonValue } });
+        });
+        return prev;
+      }, []);
+      if (basePropertiesMatchQuery.length) {
+        matchQueryArr.push(basePropertiesMatchQuery.length > 1 ? { $and: basePropertiesMatchQuery } : basePropertiesMatchQuery[0]);
+      }
+    }
+
+    if (getProductsDTO.customProperties) {
+      const customPropertiesMatchQuery = Object.entries(getProductsDTO.customProperties).reduce((prev, curr) => {
+        const customPropertyId = curr[0];
+        Object.entries(curr[1]).forEach(([comparisonOperator, comparisonValue]) => {
+          prev.push({productProps: {
+              $elemMatch: {
+                  $and: [
+                    { productTypePropertyId: { $eq: customPropertyId } },
+                    { value: { [comparisonOperator]: comparisonValue } },
+                  ]
+              }
+            }});
+        });
+        return prev;
+      }, []);
+      if (customPropertiesMatchQuery.length) {
+        matchQueryArr.push(customPropertiesMatchQuery.length > 1 ? { $and: customPropertiesMatchQuery } : customPropertiesMatchQuery[0]);
+      }
+    }
+
+    const aggregate: PipelineStage[] = [
+      { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' } },
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true } },
+    ];
+
+    if (matchQueryArr.length) {
+      aggregate.push({ $match: matchQueryArr.length > 1 ? { $and: matchQueryArr } : matchQueryArr[0] });
+    }
+
+    if (getProductsDTO.sort) {
+      const sortOperator = { $sort: { } }, sort = getProductsDTO.sort.property;
+      sortOperator["$sort"][sort] = getProductsDTO.sort.direction;
+      aggregate.push(sortOperator);
+    }
+
+    if (getProductsDTO.preview) {
+      aggregate.push(
+          { $unset: ['productTypeId', 'productProps'] },
+          { $lookup: {from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'categoryId'} },
+          { $addFields: {'categoryName': '$categoryId.name' }},
+          { $unwind: { path: '$categoryName', preserveNullAndEmptyArrays: true }},
+          { $unset: 'categoryId' }
+      )
+    }
+
+    aggregate.push(
+      {
+        $facet: {
+          metadata: [ { $count: "total" }, { $addFields: { page, limit, lastPage: { $ceil: { $divide: ['$total', limit] } } } } ],
+          data: [ { $skip: (page - 1) * limit }, { $limit: limit } ]
+        },
+      },
+      {
+        $addFields: {
+          metadata: {
+            $ifNull: [
+              { $arrayElemAt: [ "$metadata", 0 ] },
+              {
+                total: 0,
+                page,
+                limit,
+                lastPage: 1,
+              }
+            ]
+          }
+        }
+      },
+    )
+
+    return this.productModel.aggregate([...aggregate]).exec().then(items => items[0])
+  }
+
+  private toObjectId(value: GetProductsComparisonValue): ObjectId | ObjectId[] {
+    if (Array.isArray(value)) {
+      return value.map(item => new ObjectId(item));
+    }
+    value = value.toString();
+    return new ObjectId(value);
   }
 }
