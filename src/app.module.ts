@@ -13,7 +13,7 @@ import { NotifyModule } from './notify/notify.module';
 @Module({
   imports: [
     // MongooseModule.forRoot(`mongodb://root:P@rT0fin)@45.130.151.197:27017`),
-    MongooseModule.forRoot(`mongodb://root:parfPass@92.255.111.60:27017`),
+    MongooseModule.forRoot(`mongodb://root:parfPass@92.255.111.60:27017`, {dbName: 'shop'}),
     UserModule,
     ProductModule,
     AuthModule,
