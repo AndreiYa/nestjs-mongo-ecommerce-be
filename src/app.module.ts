@@ -14,10 +14,11 @@ import { NotifyModule } from './notify/notify.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `./.env`
+      // envFilePath: `./.env`
       // envFilePath: `./env/.${process.env.NODE_ENV}.env`
     }),
-    MongooseModule.forRoot(`${process.env.MONGODB_URI}`),
+    // MongooseModule.forRoot(`${process.env.MONGODB_URI}`),
+    MongooseModule.forRoot(`mongodb://root:P@rT0fin)@localhost:27017/shop`),
     UserModule,
     ProductModule,
     AuthModule,
