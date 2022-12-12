@@ -1,10 +1,10 @@
 version: '3'
 services:
-  top.api:
-    image: docker.pkg.github.com/alaricode/top-api-demo/top-api-demo:develop
-    container_name: top-api
+  hue.EC-Parf.cloud-BE:
+    image: ghcr.io/andreiya/nestjs-mongo-ecommerce-be/nestjs-mongo-ecommerce-be:develop
+    container_name: nestjs-mongo-ecommerce-be
     restart: always
     ports:
       - 3000:3000
     volumes:
-      - ./.env:/opt/app/.env
+      - ./env/.prod.env:/opt/app/.env
