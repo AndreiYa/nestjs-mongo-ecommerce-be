@@ -4,6 +4,7 @@
 /storage
 /docker
 /env
+/db
 
 # Logs
 logs
