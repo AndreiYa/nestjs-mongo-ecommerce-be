@@ -1,14 +1,14 @@
 version: '3'
 services:
   mongo:
-    image: mongo:4.4.6
+    image: mongo:latest
     container_name: shopMongoDB
     restart: always
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=P@rT0fin)
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: parfPass
     ports:
-      - 27017:27017
+      - "27017:27017"
     volumes:
       - ./mongo-data:/data/db
     command: --wiredTigerCacheSizeGB 1.5
