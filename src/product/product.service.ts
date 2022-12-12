@@ -23,12 +23,14 @@ export class ProductService {
     ]).exec()
   }
 
-  async getProduct(id: string): Promise<Product[]> {
+  async getProduct(id: string): Promise<Product> {
     const productId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
       { $match: { "_id": productId }},
       { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
-      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }}
+      { $lookup: { from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'category' }},
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
+      { $unwind: { path: '$category', preserveNullAndEmptyArrays: true }},
     ]).exec().then(items => items[0])
   }
 

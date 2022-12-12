@@ -25,7 +25,7 @@ export class ProductController {
   }
 
   @Get('product/:id')
-  async getProduct(@Param('id') id: string): Promise<Product[]> {
+  async getProduct(@Param('id') id: string): Promise<Product> {
     const product = await this.productService.getProduct(id);
     if (!product) throw new NotFoundException('Product does not exist!');
     return product;
