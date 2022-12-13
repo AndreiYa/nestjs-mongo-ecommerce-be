@@ -9,11 +9,15 @@ import { OrderModule } from './order/order.module';
 import { StorageModule } from './storage/storage.module';
 import { ArticleModule } from './article/article.module';
 import { NotifyModule } from './notify/notify.module';
+import { ConfigModule } from "@nestjs/config";
+import { getMongoDB } from "../config/getMongoDB";
 
 @Module({
   imports: [
-    // MongooseModule.forRoot(`mongodb://root:P@rT0fin)@45.130.151.197:27017`),
-    MongooseModule.forRoot(`mongodb://root:parfPass@92.255.111.60:27017`, {dbName: 'shop'}),
+    ConfigModule.forRoot({
+      envFilePath: ['./.env.local', './.env']
+    }),
+    MongooseModule.forRoot(getMongoDB().URI, {dbName: getMongoDB().DB}),
     UserModule,
     ProductModule,
     AuthModule,
@@ -28,6 +32,9 @@ import { NotifyModule } from './notify/notify.module';
   providers: [],
 })
 export class AppModule {
+  constructor() {
+    console.log(getMongoDB().URI, getMongoDB().DB)
+  }
   // configure(consumer: MiddlewareConsumer) {
   //   consumer.apply(AuthMiddleware).forRoutes({
   //     path: '*',

@@ -3,8 +3,9 @@
 /node_modules
 /storage
 /docker
-/env
 /db
+.env.local
+.env
 
 # Logs
 logs
