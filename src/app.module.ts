@@ -32,9 +32,6 @@ import { getMongoDB } from "../config/getMongoDB";
   providers: [],
 })
 export class AppModule {
-  constructor() {
-    console.log(getMongoDB().URI, getMongoDB().DB)
-  }
   // configure(consumer: MiddlewareConsumer) {
   //   consumer.apply(AuthMiddleware).forRoutes({
   //     path: '*',
