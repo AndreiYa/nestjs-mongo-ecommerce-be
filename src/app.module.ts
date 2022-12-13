@@ -15,7 +15,7 @@ import { getMongoDB } from "../config/getMongoDB";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['./.env.local', './.env']
+      envFilePath: ['./.env', './.env.local']
     }),
     MongooseModule.forRoot(getMongoDB().URI, {dbName: getMongoDB().DB}),
     UserModule,
