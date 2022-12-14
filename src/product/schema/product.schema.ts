@@ -20,6 +20,9 @@ export class Product {
   @Prop({type: Number })
   totalPrice: number;
 
+  @Prop({type: Number })
+  discount: number;
+
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Brand'})
   brand: Brand;
 

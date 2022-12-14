@@ -20,6 +20,10 @@ export class CreateProductDTO {
   @IsNotEmpty()
   totalPrice: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  discount: number;
+
   @IsString()
   @IsNotEmpty()
   brand: string;

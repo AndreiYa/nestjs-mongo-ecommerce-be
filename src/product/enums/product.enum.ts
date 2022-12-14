@@ -17,4 +17,5 @@ export enum BasePropertyName {
     TotalPrice = 'totalPrice',
     IsNew = 'isNew',
     IsRec = 'isRec',
+    Discount = 'discount',
 }
