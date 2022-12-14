@@ -35,6 +35,12 @@ export class ArticleService {
       )
     }
 
+    if (filterArticleDTO.preview)  {
+      aggregate.push(
+          { $unset: ['content'] },
+      )
+    }
+
     if (filterArticleDTO.tags) {
       const tags = filterArticleDTO.tags.split(',')
       aggregate.push(
