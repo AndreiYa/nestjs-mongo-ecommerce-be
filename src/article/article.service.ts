@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectModel} from "@nestjs/mongoose";
 import {Model, PipelineStage} from "mongoose";
 import {Article, ArticleDocument} from "./schema/article.schema";
@@ -46,9 +46,9 @@ export class ArticleService {
       )
     }
 
-    paginate(aggregate, page, limit);
+    paginate(aggregate, page, limit)
 
-    return this.articleModel.aggregate([...aggregate]);
+    return this.articleModel.aggregate([...aggregate]).exec().then(items => items[0])
   }
 
   async getArticle(id: string): Promise<Article> {
