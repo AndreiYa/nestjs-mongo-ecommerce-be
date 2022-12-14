@@ -7,6 +7,7 @@ import {GetProductsComparisonValue, GetProductsDTO} from "./dto/filterProduct.dt
 import {CreateProductDTO} from "./dto/createProduct.dto";
 import {objectIdProperties} from "./const/object-id-properties.const";
 import {transliterate} from "./transliteration.func";
+import {paginate} from "../helpers/functions/paginate.func";
 
 @Injectable()
 export class ProductService {
@@ -144,29 +145,7 @@ export class ProductService {
       )
     }
 
-    aggregate.push(
-      {
-        $facet: {
-          metadata: [ { $count: "total" }, { $addFields: { page, limit, lastPage: { $ceil: { $divide: ['$total', limit] } } } } ],
-          data: [ { $skip: (page - 1) * limit }, { $limit: limit } ]
-        },
-      },
-      {
-        $addFields: {
-          metadata: {
-            $ifNull: [
-              { $arrayElemAt: [ "$metadata", 0 ] },
-              {
-                total: 0,
-                page,
-                limit,
-                lastPage: 1,
-              }
-            ]
-          }
-        }
-      },
-    )
+    paginate(aggregate, page, limit);
 
     return this.productModel.aggregate([...aggregate]).exec().then(items => items[0])
   }

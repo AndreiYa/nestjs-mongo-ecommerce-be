@@ -14,4 +14,7 @@ export enum BasePropertyName {
     Category = 'categoryId',
     Type = 'productTypeId',
     Price = 'price',
+    TotalPrice = 'totalPrice',
+    IsNew = 'isNew',
+    IsRec = 'isRec',
 }

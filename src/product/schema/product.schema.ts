@@ -17,6 +17,9 @@ export class Product {
   @Prop({type: Number })
   price: number;
 
+  @Prop({type: Number })
+  totalPrice: number;
+
   @Prop({ type: SchemaTypes.ObjectId, ref: 'Brand'})
   brand: Brand;
 
@@ -28,6 +31,12 @@ export class Product {
 
   @Prop({ type: String })
   productTypeId: string;
+
+  @Prop({ type: Boolean })
+  isNew: boolean;
+
+  @Prop({ type: Boolean })
+  isRec: boolean;
 
   @Prop({type: () => [ProductProps]})
   productProps: ProductProps[]

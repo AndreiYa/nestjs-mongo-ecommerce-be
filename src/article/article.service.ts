@@ -4,6 +4,7 @@ import {Model, PipelineStage} from "mongoose";
 import {Article, ArticleDocument} from "./schema/article.schema";
 import {ArticleDTO} from "./dto/article.dto";
 import {FilterArticleDTO} from "./dto/filterArticle.dto.";
+import {paginate} from "../helpers/functions/paginate.func";
 
 @Injectable()
 export class ArticleService {
@@ -12,6 +13,9 @@ export class ArticleService {
   ) { }
 
   async getArticles(filterArticleDTO: FilterArticleDTO) {
+    const page: number = parseInt(filterArticleDTO.page as any) || 1
+    const limit: number = parseInt(String(filterArticleDTO.limit)) || 10
+
     if (!filterArticleDTO) {
       return this.articleModel.find().exec()
     }
@@ -42,24 +46,9 @@ export class ArticleService {
       )
     }
 
-    const request = this.articleModel.aggregate([...aggregate]);
+    paginate(aggregate, page, limit);
 
-    const page: number = parseInt(filterArticleDTO.page as any) || 1
-    const limit: number = parseInt(String(filterArticleDTO.limit)) || 9
-    const total = await this.totalCount()
-    const data = await request.skip((page - 1) * limit).limit(limit).exec()
-
-    return {
-      data,
-      total,
-      limit,
-      page,
-      lastPage: Math.ceil(total/limit)
-    }
-  }
-
-  async totalCount(options?) {
-    return this.articleModel.count(options).exec()
+    return this.articleModel.aggregate([...aggregate]);
   }
 
   async getArticle(id: string): Promise<Article> {

@@ -1,4 +1,4 @@
-import {IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
+import {IsArray, IsBoolean, IsNotEmpty, IsNumber, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {ProductPropsDTO} from "./productProps.dto";
 
@@ -16,6 +16,10 @@ export class CreateProductDTO {
   @IsNotEmpty()
   price: number;
 
+  @IsNumber()
+  @IsNotEmpty()
+  totalPrice: number;
+
   @IsString()
   @IsNotEmpty()
   brand: string;
@@ -31,6 +35,14 @@ export class CreateProductDTO {
   @IsString()
   @IsNotEmpty()
   productTypeId: string;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isNew: boolean;
+
+  @IsBoolean()
+  @IsNotEmpty()
+  isRec: boolean;
 
   @IsArray()
   @ValidateNested()
