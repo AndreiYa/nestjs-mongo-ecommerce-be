@@ -32,6 +32,37 @@ export class ProductService {
       { $lookup: { from: 'categories', localField: 'categoryId', foreignField: '_id', as: 'category' }},
       { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
       { $unwind: { path: '$category', preserveNullAndEmptyArrays: true }},
+      {
+        $addFields: {
+          productProps: {
+            $map: {
+              input: "$productProps",
+              in: {
+                $mergeObjects: ["$$this", { productTypePropertyId: { $toObjectId: "$$this.productTypePropertyId" } }]
+              }
+            }
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: "producttypeproperties",
+          localField: "productProps.productTypePropertyId",
+          foreignField: "_id",
+          as: "propsCollection"
+        }
+      },
+      {
+        $addFields: {
+          productProps: {
+            $map: {
+              input: { $zip: { inputs: ["$productProps", "$propsCollection"] } },
+              in: { $mergeObjects: "$$this" },
+            },
+          },
+        },
+      },
+      { $unset: "propsCollection" },
     ]).exec().then(items => items[0])
   }
 
