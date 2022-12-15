@@ -9,6 +9,7 @@ export enum ComparisonOperator {
 }
 
 export enum BasePropertyName {
+    Id = '_id',
     Name = 'name',
     Brand = 'brand',
     Category = 'categoryId',
