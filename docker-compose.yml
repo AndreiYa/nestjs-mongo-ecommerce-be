@@ -5,6 +5,7 @@ services:
     container_name: ecommerce-be
     restart: always
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
       - ./.env:/opt/app/.env
+      - ./storage:/opt/app/storage
