@@ -3,6 +3,8 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {ProductType, ProductTypeDocument} from "./schema/productType.schema";
 import {ProductTypeDTO} from "./dto/productType.dto";
+import { GetProductsComparisonValue } from "../dto/filterProduct.dto";
+import { ObjectId } from "mongodb";
 
 
 @Injectable()
@@ -28,6 +30,18 @@ export class ProductTypeService {
     ]).exec()
   }
 
+  async getProductTypesFilters(typesArr: string[]): Promise<ProductType[]> {
+    return this.productTypeModel.aggregate([
+      { $match: { _id: { $in : this.toObjectId(typesArr) } } },
+      { $lookup : { from: 'producttypeproperties', localField: "properties", foreignField: "_id", as: "properties" } },
+    ]).then(res => {
+      return res.reduce((prev, curr) => {
+        prev = [...new Set([...prev, ...curr.properties])];
+        return prev;
+      }, []).filter(item => res.every(resItem => resItem.properties.includes(item)) && item.showFilter);
+    });
+  }
+
   async getProductType(id: string): Promise<ProductType>{
     return this.productTypeModel.findById(id).populate('properties').exec()
   }
@@ -43,5 +57,13 @@ export class ProductTypeService {
 
   async deleteProductType(id: string): Promise<ProductType>{
    return this.productTypeModel.findByIdAndRemove(id)
+  }
+
+  private toObjectId(value: GetProductsComparisonValue): ObjectId | ObjectId[] {
+    if (Array.isArray(value)) {
+      return value.map(item => new ObjectId(item));
+    }
+    value = value.toString();
+    return new ObjectId(value);
   }
 }
