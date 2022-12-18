@@ -3,8 +3,9 @@ import {InjectModel} from "@nestjs/mongoose";
 import {Model} from "mongoose";
 import {ProductType, ProductTypeDocument} from "./schema/productType.schema";
 import {ProductTypeDTO} from "./dto/productType.dto";
-import { GetProductsComparisonValue } from "../dto/filterProduct.dto";
-import { ObjectId } from "mongodb";
+import {GetProductsComparisonValue} from "../dto/filterProduct.dto";
+import {ObjectId} from "mongodb";
+import {ProductTypePropertyType} from "../enums/productTypePropertyType.enum.";
 
 
 @Injectable()
@@ -38,7 +39,7 @@ export class ProductTypeService {
       return res.reduce((prev, curr) => {
         prev = [...new Set([...prev, ...curr.properties])];
         return prev;
-      }, []).filter(item => res.every(resItem => resItem.properties.includes(item)) && item.showFilter);
+      }, []).filter(item => res.every(resItem => resItem.properties.includes(item)) && item.showFilter &&  item.type !== ProductTypePropertyType.StringInput);
     });
   }
 
