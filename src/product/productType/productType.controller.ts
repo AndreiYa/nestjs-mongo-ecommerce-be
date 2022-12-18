@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, UseGuards} from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 import {ProductTypeService} from "./productType.service";
 import {JwtAuthGuard} from "../../auth/guards/jwt.guard";
 import {RolesGuard} from "../../auth/guards/roles.guard";
@@ -21,6 +21,11 @@ export class ProductTypeController {
   @Get('type/prev')
   async getProductTypePreviews(): Promise<ProductType[]> {
     return this.productTypeService.getProductTypePreviews()
+  }
+
+  @Get('type/filters')
+  async getProductTypesFilters(@Query() data: { types: string }) {
+    return this.productTypeService.getProductTypesFilters(data.types.split(','));
   }
 
   @Get('type/:id')
