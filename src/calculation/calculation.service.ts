@@ -31,7 +31,7 @@ export class CalculationService {
         .find(el => (el.productId).toString() === (product._id).toString()).count
       delete product._id
       totalItemsCount += product.count
-      orderPrice += product.totalPrice
+      orderPrice += product.totalPrice * product.count
     })
 
     const discount = totalItemsCount >= discountConfig.minCount ? discountConfig.discount : 0
