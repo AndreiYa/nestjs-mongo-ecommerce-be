@@ -32,14 +32,18 @@ export class ProductTypeService {
   }
 
   async getProductTypesFilters(typesArr: string[]): Promise<ProductType[]> {
+    const propertiesMatrix = [];
     return this.productTypeModel.aggregate([
       { $match: { _id: { $in : this.toObjectId(typesArr) } } },
       { $lookup : { from: 'producttypeproperties', localField: "properties", foreignField: "_id", as: "properties" } },
     ]).then(res => {
       return res.reduce((prev, curr) => {
-        prev = [...new Set([...prev, ...curr.properties])];
+        propertiesMatrix.push(curr.properties.map(prop => prop._id.toString()));
+        prev = [...new Map([...prev, ...curr.properties].map(prop => [prop._id.toString(), prop])).values()];
         return prev;
-      }, []).filter(item => res.every(resItem => resItem.properties.includes(item)) && item.showFilter &&  item.type !== ProductTypePropertyType.StringInput);
+      }, []).filter(item => {
+        return propertiesMatrix.every(matrixItem => matrixItem.includes(item._id.toString())) && item.showFilter &&  item.type !== ProductTypePropertyType.StringInput;
+      });
     });
   }
 
