@@ -41,6 +41,8 @@ export class OrderController {
   }
 
   @Put('order/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async updateOrder(@Param('id', IdValidationPipe) id: string, @Body() createOrderDTO: CreateOrderDTO): Promise<Order> {
     const order = await this.orderService.updateOrder(id, createOrderDTO)
     if (!order) throw new NotFoundException('Order does not exist!')
@@ -48,6 +50,8 @@ export class OrderController {
   }
 
   @Delete('order/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   async deleteOrder(@Param('id', IdValidationPipe) id: string): Promise<Order> {
     const order = await this.orderService.deleteOrder(id)
     if (!order) throw new NotFoundException('Order does not exist!')

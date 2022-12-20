@@ -17,8 +17,19 @@ export class NotifyService {
   }
 
   async sendMessage(notifyDTO: NotifyDTO, chartId: string = this.options.chatId) {
-    const message = `message type: ${notifyDTO.name}\n` +
-                    `description: ${notifyDTO.description ?? ''}`
+    const message = `Новый заказ\n` +
+                    `Заказчик:\n` +
+                      `Имя: ${notifyDTO.customer?.name ?? ''}\n` +
+                      `Телефон: ${notifyDTO.customer?.phone ?? ''}\n` +
+                    `Код заказа: ${notifyDTO.orderCode ?? ''}\n` +
+                    `Доставка:\n` +
+                      `Адрес: ${notifyDTO.delivery?.deliveryAddress ?? ''}\n` +
+                      `Метод: ${notifyDTO.delivery?.deliveryMethod ?? ''}\n` +
+                      `Дата: ${notifyDTO.delivery?.deliveryData ?? ''}\n` +
+                      `Комментарий: ${notifyDTO.delivery?.comment ?? ''}\n` +
+                    `Оплата: ${notifyDTO.paymentMethod?.name ?? ''}\n` +
+                    `Скидка: ${notifyDTO.totalDiscount ?? ''}\n` +
+                    `К оплате: ${notifyDTO.totalPrice ?? ''}\n`
     await this.bot.telegram.sendMessage(chartId, message)
   }
 }

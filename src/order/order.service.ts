@@ -4,10 +4,15 @@ import {Order} from "./schema/order.schema";
 import {CreateOrderDTO} from "./dto/create-order.dto";
 import {InjectModel} from "@nestjs/mongoose";
 import {nanoid} from "nanoid";
+import {NotifyService} from "../notify/notify.service";
+import {NotifyDTO} from "../notify/dto/notify.dto";
 
 @Injectable()
 export class OrderService {
-  constructor(@InjectModel('Order') private readonly orderModel: Model<Order>) {}
+  constructor(
+    @InjectModel('Order') private readonly orderModel: Model<Order>,
+    private readonly notifyService: NotifyService) {
+  }
 
   async getOrders(): Promise<Order[]> {
     return this.orderModel.find().exec()
@@ -29,6 +34,15 @@ export class OrderService {
     }
     createOrderDTO.orderCode = orderCode
     const newOrder = await this.orderModel.create(createOrderDTO)
+    const notify: NotifyDTO = {
+      customer: createOrderDTO.customer,
+      orderCode,
+      delivery: createOrderDTO.delivery,
+      paymentMethod: createOrderDTO.paymentMethod,
+      totalDiscount: createOrderDTO.totalDiscount,
+      totalPrice: createOrderDTO.totalPrice
+    }
+    await this.notifyService.sendMessage(notify)
     return newOrder.save()
   }
 

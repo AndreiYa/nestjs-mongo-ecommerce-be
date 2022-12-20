@@ -13,6 +13,7 @@ import {OrderStateController} from "./orderState/orderState.controller";
 import {OrderStateService} from "./orderState/orderState.service";
 import {PaymentMethodController} from "./paymentMethod/paymentMethod.controller";
 import {PaymentMethodService} from "./paymentMethod/paymentMethod.service";
+import {NotifyModule} from "../notify/notify.module";
 
 @Module({
   controllers: [
@@ -35,6 +36,7 @@ import {PaymentMethodService} from "./paymentMethod/paymentMethod.service";
       {name: 'DeliveryMethod', schema: DeliveryMethodSchema},
       {name: 'PaymentMethod', schema: PaymentMethodSchema}
     ]),
+    NotifyModule
   ]
 })
 export class OrderModule {}
