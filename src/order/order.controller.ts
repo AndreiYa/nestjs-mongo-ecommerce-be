@@ -28,6 +28,13 @@ export class OrderController {
     return order
   }
 
+  @Get('order/:code')
+  async getTracingStatus(@Param('code') code: string): Promise<Order> {
+    const order = await this.orderService.getTracingStatus(code)
+    if (!order) throw new NotFoundException('Order does not exist!')
+    return order
+  }
+
   @Post('order')
   async addOrder(@Body() createOrderDTO: CreateOrderDTO): Promise<Order> {
     return this.orderService.addOrder(createOrderDTO)

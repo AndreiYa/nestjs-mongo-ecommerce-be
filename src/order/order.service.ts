@@ -17,6 +17,10 @@ export class OrderService {
     return this.orderModel.findById(id).exec()
   }
 
+  async getTracingStatus(code: string): Promise<Order> {
+    return this.orderModel.findOne({ orderCode: code}).exec()
+  }
+
   async addOrder(createOrderDTO: CreateOrderDTO): Promise<Order> {
     const orderCode = nanoid(6)
     const checkCode = await this.isUnique(orderCode)
