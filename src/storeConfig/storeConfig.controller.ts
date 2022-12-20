@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Patch, UseGuards} from '@nestjs/common';
+import {Body, Controller, Get, Param, Put, UseGuards} from '@nestjs/common';
 import {Roles} from "../auth/decorators/roles.decorator";
 import {Role} from "../auth/enums/role.enum";
 import {JwtAuthGuard} from "../auth/guards/jwt.guard";
@@ -17,11 +17,11 @@ export class StoreConfigController {
     return this.discountConfigService.getDiscountConfig()
   }
 
-  @Patch('discount')
+  @Put('discount/:id')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard)
-  async updateDiscountConfig(@Body() discountConfigDTO: DiscountConfigDTO): Promise<DiscountConfig> {
-    return this.discountConfigService.updateDiscountConfig(discountConfigDTO);
+  async updateDiscountConfig(@Param('id') id: string, @Body() discountConfigDTO: DiscountConfigDTO): Promise<DiscountConfig> {
+    return this.discountConfigService.updateDiscountConfig(id, discountConfigDTO);
   }
 
 }

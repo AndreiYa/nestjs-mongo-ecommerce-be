@@ -27,8 +27,7 @@ export class DiscountConfigService {
     return discountConfig.save()
   }
 
-  async updateDiscountConfig(discountConfigDTO: DiscountConfigDTO): Promise<DiscountConfig> {
-    const discountConfig = await this.discountConfigModel.findOne()
-    return this.discountConfigModel.findByIdAndUpdate(discountConfig.id, discountConfigDTO, {new: true})
+  async updateDiscountConfig(id: string, discountConfigDTO: DiscountConfigDTO): Promise<DiscountConfig> {
+    return this.discountConfigModel.findByIdAndUpdate(id, discountConfigDTO, {new: true})
   }
 }
