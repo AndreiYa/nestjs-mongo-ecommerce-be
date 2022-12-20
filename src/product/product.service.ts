@@ -151,14 +151,16 @@ export class ProductService {
       }
     }
 
-    const aggregate: PipelineStage[] = [
-      { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' } },
-      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true } },
-    ];
+    const aggregate: PipelineStage[] = [];
 
     if (matchQueryArr.length) {
       aggregate.push({ $match: matchQueryArr.length > 1 ? { $and: matchQueryArr } : matchQueryArr[0] });
     }
+
+    aggregate.push(
+        { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' } },
+        { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true } },
+    );
 
     if (getProductsDTO.sort) {
       const sortOperator = { $sort: { } }, sort = getProductsDTO.sort.property;
