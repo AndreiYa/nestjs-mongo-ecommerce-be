@@ -37,6 +37,7 @@ import {ProductTypePropertyService} from "./productTypeProperty/productTypePrope
     BrandController,
     ProductTypeController,
     ProductTypePropertyController
-  ]
+  ],
+  exports: [ProductService]
 })
 export class ProductModule {}

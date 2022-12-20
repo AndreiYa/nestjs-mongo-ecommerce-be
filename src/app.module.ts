@@ -11,6 +11,9 @@ import { ArticleModule } from './article/article.module';
 import { NotifyModule } from './notify/notify.module';
 import { ConfigModule } from "@nestjs/config";
 import { getMongoDB } from "../config/getMongoDB";
+import { StoreConfigModule } from "./storeConfig/storeConfig.module";
+import { CalculationService } from './calculation/calculation.service';
+import { CalculationController } from './calculation/calculation.controller';
 
 @Module({
   imports: [
@@ -26,10 +29,12 @@ import { getMongoDB } from "../config/getMongoDB";
     OrderModule,
     StorageModule,
     ArticleModule,
-    NotifyModule
+    NotifyModule,
+    StoreConfigModule
   ],
-  controllers: [],
-  providers: [],
+  controllers: [CalculationController],
+  providers: [CalculationService],
+  exports: []
 })
 export class AppModule {
   // configure(consumer: MiddlewareConsumer) {

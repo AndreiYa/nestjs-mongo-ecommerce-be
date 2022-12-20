@@ -24,6 +24,14 @@ export class ProductService {
     ]).exec()
   }
 
+  async getProductsByIds(productIds: mongoose.Types.ObjectId[]) {
+    return this.productModel.aggregate([
+      {$match: { "_id": {$in: productIds}}},
+      {$project: {
+        totalPrice: 1}}
+    ]).exec()
+  }
+
   async getProduct(id: string): Promise<Product> {
     const productId = new mongoose.Types.ObjectId(id)
     return await this.productModel.aggregate([
