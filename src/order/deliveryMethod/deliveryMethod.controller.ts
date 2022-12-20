@@ -14,8 +14,6 @@ export class DeliveryMethodController {
   constructor(private deliveryMethodService: DeliveryMethodService) {}
 
   @Get('/delivery-method')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
   async getDeliveryMethods(): Promise<DeliveryMethod[]> {
     return this.deliveryMethodService.getDeliveryMethods()
   }

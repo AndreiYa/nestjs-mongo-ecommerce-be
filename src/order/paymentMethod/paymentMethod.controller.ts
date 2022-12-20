@@ -14,8 +14,6 @@ export class PaymentMethodController {
   constructor(private paymentMethodService: PaymentMethodService) {}
 
   @Get('/payment-method')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
   async getPaymentMethods(): Promise<PaymentMethod[]> {
     return this.paymentMethodService.getPaymentMethods()
   }
