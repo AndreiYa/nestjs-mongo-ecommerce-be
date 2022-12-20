@@ -35,13 +35,13 @@ export class CalculationService {
     })
 
     const discount = totalItemsCount >= discountConfig.minCount ? discountConfig.discount : 0
-    const totalDiscount = discount !== 0 ? orderPrice * discount / 100 : 0
+    const totalDiscount = (Math.ceil((discount !== 0 ? orderPrice * discount / 100 : 0) * 100) / 100)
 
     return {
       orderPrice,
       totalItemsCount,
       totalDiscount,
-      totalPrice: orderPrice - totalDiscount
+      totalPrice: (Math.ceil((orderPrice - totalDiscount) * 100) / 100)
     }
   }
 }
