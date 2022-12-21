@@ -7,6 +7,7 @@ import {nanoid} from "nanoid";
 import {NotifyService} from "../notify/notify.service";
 import {NotifyDTO} from "../notify/dto/notify.dto";
 import {CalculationService} from "../shared/calculation.service";
+import {IProduct} from "../shared/interfaces/total.interface";
 
 @Injectable()
 export class OrderService {
@@ -28,17 +29,24 @@ export class OrderService {
     return this.orderModel.findOne({ orderCode: code}).exec()
   }
 
-  async addOrder(createOrderDTO: CreateOrderDTO): Promise<Order&any> {
+  async addOrder(createOrderDTO: CreateOrderDTO): Promise<Order> {
     const orderCode = nanoid(6)
     const checkCode = await this.isUnique(orderCode)
     if (checkCode && checkCode.length !== 0) {
       return this.addOrder(createOrderDTO)
     }
     createOrderDTO.orderCode = orderCode
-    const price = await this.calculationService.getTotalDiscount(createOrderDTO.cartItems, true)
-    const products = price.products
-    delete price.products
-
+    const calculation = await this.calculationService.getTotalDiscount(createOrderDTO.cartItems, true)
+    Object.assign(createOrderDTO, {
+      orderCode,
+      cartItems: createOrderDTO.cartItems.map(cartItem => ({
+        product: calculation.products.find((product: IProduct) => product._id.toString() === cartItem.productId.toString()),
+        count: cartItem.count,
+      })),
+      subTotalPrice: calculation.orderPrice,
+      totalPrice: calculation.totalPrice,
+      totalDiscount: calculation.totalDiscount,
+    })
 
     const newOrder = await this.orderModel.create(createOrderDTO)
     const notify: NotifyDTO = {
@@ -46,17 +54,11 @@ export class OrderService {
       orderCode,
       delivery: createOrderDTO.delivery,
       paymentMethod: createOrderDTO.paymentMethod,
-      // totalDiscount: createOrderDTO.totalDiscount,
-      // totalPrice: createOrderDTO.totalPrice
+      totalDiscount: calculation.totalDiscount,
+      totalPrice: calculation.totalPrice
     }
     await this.notifyService.sendMessage(notify)
-    await newOrder.save()
-    delete newOrder.cartItems
-    return {
-      newOrder,
-      products,
-      price
-    }
+    return newOrder.save()
   }
 
 

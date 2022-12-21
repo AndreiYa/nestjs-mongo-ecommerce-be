@@ -37,6 +37,12 @@ export class CreateOrderDTO {
   @Type(() => CartItem)
   cartItems: CartItem[]
 
+  subTotalPrice: number;
+
+  totalPrice: number;
+
+  totalDiscount: number;
+
   @IsArray()
   @ValidateNested()
   @Type(() => OrderHistoryItem)
