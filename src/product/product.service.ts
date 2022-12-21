@@ -26,10 +26,18 @@ export class ProductService {
 
   async getProductsByIds(productIds: mongoose.Types.ObjectId[]) {
     return this.productModel.aggregate([
-      {$match: { "_id": {$in: productIds}}},
-      {$project: {
-        totalPrice: 1}}
+      { $match: { "_id": {$in: productIds}} },
+      { $project: {
+         totalPrice: 1}}
     ]).exec()
+  }
+
+  async getProductsByIdsFull(productIds: mongoose.Types.ObjectId[]) {
+    return this.productModel.aggregate([
+      { $match: { "_id": {$in: productIds}} },
+      { $lookup: { from: 'brands', localField: 'brand', foreignField: '_id', as: 'brand' }},
+      { $unwind: { path: '$brand', preserveNullAndEmptyArrays: true }},
+    ])
   }
 
   async getProduct(id: string): Promise<Product> {

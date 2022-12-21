@@ -14,6 +14,7 @@ import {OrderStateService} from "./orderState/orderState.service";
 import {PaymentMethodController} from "./paymentMethod/paymentMethod.controller";
 import {PaymentMethodService} from "./paymentMethod/paymentMethod.service";
 import {NotifyModule} from "../notify/notify.module";
+import {SharedModule} from "../shared/shared.module";
 
 @Module({
   controllers: [
@@ -36,7 +37,8 @@ import {NotifyModule} from "../notify/notify.module";
       {name: 'DeliveryMethod', schema: DeliveryMethodSchema},
       {name: 'PaymentMethod', schema: PaymentMethodSchema}
     ]),
-    NotifyModule
+    NotifyModule,
+    SharedModule
   ]
 })
 export class OrderModule {}
