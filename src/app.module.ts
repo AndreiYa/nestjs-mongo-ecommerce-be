@@ -12,8 +12,6 @@ import { NotifyModule } from './notify/notify.module';
 import { ConfigModule } from "@nestjs/config";
 import { getMongoDB } from "../config/getMongoDB";
 import { StoreConfigModule } from "./storeConfig/storeConfig.module";
-import { CalculationService } from './calculation/calculation.service';
-import { CalculationController } from './calculation/calculation.controller';
 
 @Module({
   imports: [
@@ -32,8 +30,8 @@ import { CalculationController } from './calculation/calculation.controller';
     NotifyModule,
     StoreConfigModule
   ],
-  controllers: [CalculationController],
-  providers: [CalculationService],
+  controllers: [],
+  providers: [],
   exports: []
 })
 export class AppModule {

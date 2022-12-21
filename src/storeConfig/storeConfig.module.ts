@@ -18,7 +18,8 @@ import {DiscountConfigSchema} from "./discountConfig/schema/discountConfig.schem
     ])
   ],
   exports: [
-    DiscountConfigService
+    DiscountConfigService,
+    StoreConfigService
   ]
 })
 export class StoreConfigModule {}
