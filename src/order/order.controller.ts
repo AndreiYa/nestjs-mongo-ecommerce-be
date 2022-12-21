@@ -7,6 +7,7 @@ import {Order} from "./schema/order.schema";
 import {Role} from "../auth/enums/role.enum";
 import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
 import {CreateOrderDTO} from "./dto/create-order.dto";
+import { UpdateOrderDTO } from "./dto/update-order.dto";
 
 @Controller('store/')
 export class OrderController {
@@ -43,8 +44,8 @@ export class OrderController {
   @Put('order/:id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async updateOrder(@Param('id', IdValidationPipe) id: string, @Body() createOrderDTO: CreateOrderDTO): Promise<Order> {
-    const order = await this.orderService.updateOrder(id, createOrderDTO)
+  async updateOrder(@Param('id', IdValidationPipe) id: string, @Body() updateOrderDTO: UpdateOrderDTO): Promise<Order> {
+    const order = await this.orderService.updateOrder(id, updateOrderDTO)
     if (!order) throw new NotFoundException('Order does not exist!')
     return order
   }

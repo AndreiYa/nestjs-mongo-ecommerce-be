@@ -8,6 +8,7 @@ import {NotifyService} from "../notify/notify.service";
 import {NotifyDTO} from "../notify/dto/notify.dto";
 import {CalculationService} from "../shared/calculation.service";
 import {IProduct} from "../shared/interfaces/total.interface";
+import { UpdateOrderDTO } from "./dto/update-order.dto";
 
 @Injectable()
 export class OrderService {
@@ -66,8 +67,8 @@ export class OrderService {
     return this.orderModel.find( {orderCode: orderCode})
   }
 
-  async updateOrder(id: string, createOrderDTO: CreateOrderDTO): Promise<Order> {
-    return this.orderModel.findByIdAndUpdate(id, createOrderDTO, {new: true})
+  async updateOrder(id: string, updateOrderDTO: UpdateOrderDTO): Promise<Order> {
+    return this.orderModel.findByIdAndUpdate(id, updateOrderDTO, {new: true})
   }
 
   async deleteOrder(id: string): Promise<Order> {

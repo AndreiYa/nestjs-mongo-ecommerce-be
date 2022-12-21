@@ -1,12 +1,11 @@
-import {CreateProductDTO} from "../../product/dto/createProduct.dto";
-import {IsNotEmpty, IsNumber, ValidateNested} from "class-validator";
+import {IsNotEmpty, IsNumber} from "class-validator";
 import {Type} from "class-transformer";
+import { Product } from "../../product/schema/product.schema";
 
 export class UpdateCartItemDTO {
   @IsNotEmpty()
-  @Type(() => CreateProductDTO)
-  @ValidateNested()
-  product: CreateProductDTO
+  @Type(() => Product)
+  product: Product
 
   @IsNumber()
   @IsNotEmpty()
