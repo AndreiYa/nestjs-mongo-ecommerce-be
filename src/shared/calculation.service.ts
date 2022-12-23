@@ -34,7 +34,7 @@ export class CalculationService {
         .find(el => (el.productId).toString() === (product._id).toString()).count
       delete product._id
       totalItemsCount += product.count
-      orderPrice += product.totalPrice * product.count
+      orderPrice += Math.ceil((product.totalPrice * 100) / 100) * product.count
     })
 
     const discount = totalItemsCount >= discountConfig.minCount ? discountConfig.discount : 0
