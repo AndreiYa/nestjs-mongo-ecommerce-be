@@ -48,6 +48,10 @@ export class CreateProductDTO {
   @IsNotEmpty()
   isRec: boolean;
 
+  @IsBoolean()
+  @IsNotEmpty()
+  isStock: boolean;
+
   @IsArray()
   @ValidateNested()
   @Type(() => ProductPropsDTO)

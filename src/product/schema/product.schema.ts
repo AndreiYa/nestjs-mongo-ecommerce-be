@@ -41,6 +41,9 @@ export class Product {
   @Prop({ type: Boolean })
   isRec: boolean;
 
+  @Prop({ type: Boolean })
+  isStock: boolean;
+
   @Prop({type: () => [ProductProps]})
   productProps: ProductProps[]
 }
