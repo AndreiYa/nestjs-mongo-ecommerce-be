@@ -7,8 +7,8 @@ import {path} from 'app-root-path';
 async function bootstrap() {
   const PORT = process.env.PORT || 5001
   const httpsOptions = {
-    key: fs.readFileSync(`${path}/certs/private.pem`),
-    cert: fs.readFileSync(`${path}/certs/public.pem`),
+    key: fs.readFileSync(`${path}/certs/private.pem`, 'utf-8'),
+    cert: fs.readFileSync(`${path}/certs/public.pem`, 'utf-8'),
   };
 
   const app = await NestFactory.create(AppModule, {httpsOptions})
