@@ -13,6 +13,8 @@ import {CurrentUser} from "../user/decorators/user.decorator";
 export class AuthController {
   constructor(private authService: AuthService, private userService: UserService) {}
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @UsePipes(new ValidationPipe())
   @Post('/register')
   async register(@Body() createUserDTO: CreateUserDTO) {
