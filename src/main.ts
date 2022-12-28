@@ -5,15 +5,10 @@ import * as fs from "fs";
 
 async function bootstrap() {
   const PORT = process.env.PORT || 5001
-  let httpsOptions;
-
-  if (process.env.NODE_ENV === 'prod') {
-    httpsOptions = {
-      key: fs.readFileSync('./certs/private.pem'),
-      cert: fs.readFileSync('./certs/public.pem'),
-    };
-
-  }
+  const httpsOptions = {
+    key: fs.readFileSync('./certs/private.pem'),
+    cert: fs.readFileSync('./certs/public.pem'),
+  };
 
   const app = await NestFactory.create(AppModule, {httpsOptions})
   app.useGlobalPipes(new ValidationPipe());
