@@ -9,9 +9,10 @@ async function bootstrap() {
 
   if (process.env.NODE_ENV === 'prod') {
     httpsOptions = {
-      key: fs.readFileSync('etc/nginx/certs/properfumer.key'),
-      cert: fs.readFileSync('etc/nginx/certs/properfumer.crt'),
+      key: fs.readFileSync('./certs/private.pem'),
+      cert: fs.readFileSync('./certs/public.pem'),
     };
+
   }
 
   const app = await NestFactory.create(AppModule, {httpsOptions})
