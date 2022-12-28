@@ -2,12 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {ValidationPipe} from "@nestjs/common";
 import * as fs from "fs";
+import {path} from 'app-root-path';
 
 async function bootstrap() {
   const PORT = process.env.PORT || 5001
   const httpsOptions = {
-    key: fs.readFileSync('./certs/private.pem'),
-    cert: fs.readFileSync('./certs/public.pem'),
+    key: fs.readFileSync(`${path}/certs/private.pem`),
+    cert: fs.readFileSync(`${path}/certs/public.pem`),
   };
 
   const app = await NestFactory.create(AppModule, {httpsOptions})
