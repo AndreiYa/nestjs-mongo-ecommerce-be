@@ -24,9 +24,6 @@ export class NotifyService {
                     `Код заказа: ${notifyDTO.orderCode ?? ''}\n` +
                     `Доставка:\n` +
                       `Метод: ${notifyDTO.delivery?.deliveryMethod.name ?? ''}\n` +
-                      `Адрес: ${notifyDTO.delivery?.deliveryAddress ?? ''}\n` +
-                      `Индекс: ${notifyDTO.delivery?.deliveryData[0].value ?? ''}\n` +
-                      `Комментарий: ${notifyDTO.delivery?.comment ?? ''}\n` +
                     `Оплата: ${notifyDTO.paymentMethod?.name ?? ''}\n` +
                     `Скидка: ${notifyDTO.totalDiscount ?? ''}\n` +
                     `К оплате: ${notifyDTO.totalPrice ?? ''}\n`
