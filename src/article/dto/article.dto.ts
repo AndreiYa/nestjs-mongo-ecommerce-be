@@ -6,7 +6,7 @@ export class ArticleDTO {
   media: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   title: string;
 
   @IsString()

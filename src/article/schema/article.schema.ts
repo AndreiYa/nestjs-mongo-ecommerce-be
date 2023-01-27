@@ -9,7 +9,7 @@ export class Article {
   media: string;
 
   @Prop({type: String})
-  title: string;
+  title?: string;
 
   @Prop({type: String})
   description: string;
