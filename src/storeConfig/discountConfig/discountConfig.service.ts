@@ -21,7 +21,10 @@ export class DiscountConfigService {
   async createDefaultDiscountConfig(): Promise<DiscountConfig> {
     const defaultDiscountConfig: DiscountConfigDTO = {
       minCount: 1,
-      discount: 0
+      discount: 0,
+      fixPriceMinCount: null,
+      fixPrice: null,
+      fixPriceCategories: null
     }
     const discountConfig = await this.discountConfigModel.create(defaultDiscountConfig)
     return discountConfig.save()
