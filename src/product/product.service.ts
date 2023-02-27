@@ -28,7 +28,8 @@ export class ProductService {
     return this.productModel.aggregate([
       { $match: { "_id": {$in: productIds}} },
       { $project: {
-         totalPrice: 1}}
+          categoryId: 1,
+          totalPrice: 1}}
     ]).exec()
   }
 

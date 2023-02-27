@@ -15,6 +15,11 @@ export class CalculationService {
   }
 
   async getTotalDiscount(totalDiscountDTO: TotalDiscountDTO[], isOrder = false) {
+    let totalItemsCount = 0
+    let fixPriceCount = 0
+    let orderPrice = 0
+    let fixPrice = 0
+
     const productIds: mongoose.Types.ObjectId[] = []
     totalDiscountDTO.forEach((query) => {
       const id = query.productId
@@ -24,10 +29,6 @@ export class CalculationService {
 
     const discountConfig = await this.discountConfigService.getDiscountConfig()
     const products = await this.productService.getProductsByIds(productIds)
-    const productsList = isOrder ? await this.productService.getProductsByIdsFull(productIds): []
-
-    let totalItemsCount = 0
-    let orderPrice = 0
 
     products.map(product => {
       product.count = totalDiscountDTO
@@ -37,14 +38,31 @@ export class CalculationService {
       orderPrice += Math.ceil((product.totalPrice * 100) / 100) * product.count
     })
 
-    const discount = totalItemsCount >= discountConfig.minCount ? discountConfig.discount : 0
-    const totalDiscount = (Math.ceil((discount !== 0 ? orderPrice * discount / 100 : 0) * 100) / 100)
+    if (discountConfig.fixPriceCategories && discountConfig.fixPriceCategories.length !== 0) {
+      const fixPriceCategories = discountConfig.fixPriceCategories
+      fixPriceCount = products.reduce((acc, product) => fixPriceCategories.includes(product.categoryId) ? acc += product.count : acc += 0, 0)
+      fixPriceCount = fixPriceCount >= discountConfig.fixPriceMinCount ? fixPriceCount : 0
+
+      if (fixPriceCount >= discountConfig.fixPriceMinCount) {
+        products.map(product => {
+          if (fixPriceCategories.includes(product.categoryId)) {
+            fixPrice += product.totalPrice * product.count
+            product.totalPrice = discountConfig.fixPrice
+          }
+        })
+      }
+    }
+
+    const productsList = isOrder ? await this.productService.getProductsByIdsFull(productIds): []
+    const itemsCountDiscount = (totalItemsCount - fixPriceCount) >= discountConfig.minCount ? discountConfig.discount : 0
+    const fixPriceDiscount = (Math.ceil((fixPrice - (fixPrice !== 0 ? fixPriceCount * discountConfig.fixPrice : 0)) * 100) / 100)
+    const discountByCount = (Math.ceil((itemsCountDiscount !== 0 ? (orderPrice - fixPrice) * itemsCountDiscount / 100 : 0) * 100) / 100)
 
     const result: ITotal = {
       orderPrice,
       totalItemsCount,
-      totalDiscount,
-      totalPrice: (Math.ceil((orderPrice - totalDiscount) * 100) / 100),
+      totalDiscount: discountByCount + fixPriceDiscount,
+      totalPrice: (Math.ceil((orderPrice - (discountByCount + fixPriceDiscount)) * 100) / 100),
     }
     isOrder ? result.products = productsList : null
     return result

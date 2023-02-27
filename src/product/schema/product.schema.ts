@@ -44,7 +44,7 @@ export class Product {
   @Prop({ type: Boolean })
   isStock: boolean;
 
-  @Prop({type: () => [ProductProps]})
+  @Prop({ type: () => [ProductProps] })
   productProps: ProductProps[]
 }
 

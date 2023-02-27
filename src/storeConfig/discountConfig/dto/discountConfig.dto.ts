@@ -1,4 +1,4 @@
-import {IsNotEmpty, IsNumber} from "class-validator";
+import {IsArray, IsNotEmpty, IsNumber, IsOptional, IsString} from "class-validator";
 
 export class DiscountConfigDTO {
   @IsNumber()
@@ -8,4 +8,17 @@ export class DiscountConfigDTO {
   @IsNumber()
   @IsNotEmpty()
   discount: number;
+
+  @IsNumber()
+  @IsOptional()
+  fixPriceMinCount?: number;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  fixPriceCategories?: string[];
+
+  @IsNumber()
+  @IsOptional()
+  fixPrice?: number;
 }
