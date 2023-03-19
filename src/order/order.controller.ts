@@ -7,17 +7,18 @@ import {Order} from "./schema/order.schema";
 import {Role} from "../auth/enums/role.enum";
 import {IdValidationPipe} from "../helpers/pipes/idValidation.pipe";
 import {CreateOrderDTO} from "./dto/create-order.dto";
-import { UpdateOrderDTO } from "./dto/update-order.dto";
+import {UpdateOrderDTO} from "./dto/update-order.dto";
+import {GetOrdersDTO} from "./dto/get-orders.dto";
 
 @Controller('store/')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  @Get('/orders')
+  @Post('/orders')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.Admin)
-  async getOrders(): Promise<Order[]> {
-    return this.orderService.getOrders()
+  async getOrders(@Body() getOrdersDTO: GetOrdersDTO): Promise<Order[]> {
+    return this.orderService.getOrders(getOrdersDTO)
   }
 
   @Get('/order/:id')

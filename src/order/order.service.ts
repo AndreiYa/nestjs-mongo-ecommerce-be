@@ -1,14 +1,16 @@
-import {Injectable} from '@nestjs/common';
-import {Model} from "mongoose";
-import {Order} from "./schema/order.schema";
-import {CreateOrderDTO} from "./dto/create-order.dto";
-import {InjectModel} from "@nestjs/mongoose";
-import {nanoid} from "nanoid";
-import {NotifyService} from "../notify/notify.service";
-import {NotifyDTO} from "../notify/dto/notify.dto";
-import {CalculationService} from "../shared/calculation.service";
-import {IProduct} from "../shared/interfaces/total.interface";
+import { Injectable } from '@nestjs/common';
+import { Model, PipelineStage } from "mongoose";
+import { Order } from "./schema/order.schema";
+import { CreateOrderDTO } from "./dto/create-order.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { nanoid } from "nanoid";
+import { NotifyService } from "../notify/notify.service";
+import { NotifyDTO } from "../notify/dto/notify.dto";
+import { CalculationService } from "../shared/calculation.service";
+import { IProduct } from "../shared/interfaces/total.interface";
 import { UpdateOrderDTO } from "./dto/update-order.dto";
+import { GetOrdersDTO, OrderSortProperties } from "./dto/get-orders.dto";
+import { paginate } from "../helpers/functions/paginate.func";
 
 @Injectable()
 export class OrderService {
@@ -18,8 +20,26 @@ export class OrderService {
     private readonly calculationService: CalculationService) {
   }
 
-  async getOrders(): Promise<Order[]> {
-    return this.orderModel.find().exec()
+  async getOrders(getOrdersDTO: GetOrdersDTO): Promise<Order[]> {
+    const page: number = parseInt(getOrdersDTO?.pagination?.page as any) || 1
+    const limit: number = parseInt(String(getOrdersDTO?.pagination?.limit)) || 10
+
+    const aggregate: PipelineStage[] = [];
+
+    if (getOrdersDTO.sort) {
+      const property: OrderSortProperties = getOrdersDTO.sort.property;
+      let sortOperator = { $sort: {} };
+      if (property === OrderSortProperties.Customer) {
+        sortOperator["$sort"]['customer.name'] = getOrdersDTO.sort.direction;
+      } else {
+        sortOperator["$sort"][property] = getOrdersDTO.sort.direction;
+      }
+      aggregate.push(sortOperator);
+    }
+
+    paginate(aggregate, page, limit);
+
+    return this.orderModel.aggregate([...aggregate]).exec().then(items => items[0])
   }
 
   async getOrderById(id: string): Promise<Order> {
