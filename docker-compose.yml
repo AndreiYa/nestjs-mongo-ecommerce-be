@@ -9,3 +9,21 @@ services:
     volumes:
       - ./.env:/opt/app/.env
       - ./storage:/opt/app/storage
+    networks:
+      - node-webapp-network
+  mongodb:
+    container_name: ecommerce-db
+    image: mongo:latest
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=parfPass
+      - MONGO_INITDB_DATABASE=shop
+    networks:
+      - node-webapp-network
+networks:
+  node-webapp-network:
+    driver: bridge
